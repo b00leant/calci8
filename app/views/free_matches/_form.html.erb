@@ -1,0 +1,479 @@
+<%= form_with(model: free_match, local: true) do |form| %>
+  <% if free_match.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(free_match.errors.count, "error") %> prohibited this match from being saved:</h2>
+
+      <ul>
+      <% free_match.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= form.hidden_field :date %>
+  <%= form.hidden_field :latitude %>
+  <%= form.hidden_field :longitude %>
+
+  <div class="container">
+    <h3>Crea una partita amichevole</h3>
+    <div class="section">
+      <h5>Seleziona data e ora</h5>
+      <a class= "btn waves-effect waves-light green darken-2" id="date_input">Data
+        <i class="material-icons right">date_range</i>
+      </a>
+      <a class=" btn waves-effect waves-light green darken-2" id="time_input">Orario
+        <i class="material-icons right">access_time</i>
+      </a>
+    </div>
+    <h5>Seleziona un luogo</h5>
+    <div class="input-field">
+        <input id="pac-input" class="controls" type="text" placeholder="Indirizzo" >
+        <div id="map" style="height:300px;margin-top:2em"></div>
+    </div>
+    <div class="row">
+      <h5>Aggiungi un giocatore</h5>
+    <div class="col s12">
+      <div class="row">
+        <div class="chips">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <!--%= form.submit %-->
+    <%= button_tag(type: 'submit', class: "green darken-2 btn waves-effect waves-light right",name: 'action', disabled: true) do %>
+      <i class="icon-soccer-court"></i> Procedi
+    <% end %>
+    <%= link_to 'Back', free_matches_path, class: "left btn btn-primary" %>
+  </div>
+  <script>
+        // This example adds a search box to a map, using the Google Place Autocomplete
+        // feature. People can enter geographical searches. The search box will return a
+        // pick list containing a mix of places and predicted search terms.
+
+        // This example requires the Places library. Include the libraries=places
+        // parameter when you first load the API. For example:
+        // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+        //document.addEventListener("turbolinks:load", function() {
+        $( document ).ready(function() {
+          $('input.autocompletehome').autocomplete({
+                data: {
+                  <% current_user.teams.each do |team| %>
+                  '<%= team.id %>':null,
+                  <%end%>
+                  //"Apple": null,
+                  //"Microsoft": null,
+                  //"Google": 'https://placehold.it/250x250'
+                },
+              });
+              $('input.autocompletehost').autocomplete({
+                    data: {
+                      <% (Team.all - current_user.teams).each do |team| %>
+                      '<%= team.id %>':null,
+                      <%end%>
+                      //"Apple": null,
+                      //"Microsoft": null,
+                      //"Google": 'https://placehold.it/250x250'
+                    },
+                  });
+
+            dateToggleButton = document.getElementById("date_input");
+            dialog_date = new mdDateTimePicker["default"]({
+              type: 'date',
+              future: moment().add(1, 'years'),
+              trigger: dateToggleButton
+            });
+            timeToggleButton = document.getElementById("time_input");
+            dialog_time = new mdDateTimePicker["default"]({
+              type: 'time',
+              future: moment().add(1, 'years'),
+              trigger: timeToggleButton
+            });
+            $('#mddtp-time__AM').html('AM');
+            $('#mddtp-time__PM').html('PM');
+            dateToggleButton.addEventListener("click", function() {
+               return dialog_date.toggle();
+             });
+            timeToggleButton.addEventListener("click", function() {
+              //dialog_date.time = moment();
+              return dialog_time.toggle();
+            });
+
+            dateToggleButton.addEventListener("onOk", function(e) {
+              dialog_time.time = dialog_date.time;
+              $('button[name="action"]').disabled = true;
+              $('button[name="action"]').prop('disabled', true);
+              $("#date_input").html(dialog_date.time.format('L')+'<i class="material-icons right">date_range</i>');
+              $("#time_input").html('ORARIO<i class="material-icons right">access_time</i>').val('')
+              console.log(dialog_date.time);
+            });
+            timeToggleButton.addEventListener("onOk", function(e) {
+              $("#time_input").html(dialog_time.time.format('HH:MM')+ '<i class="material-icons right">access_time</i>');
+              $("#date_input").html(dialog_time.time.format('L')+'<i class="material-icons right">date_range</i>');
+              console.log(dialog_time.time);
+              console.log(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+
+              // Salvo la data nel rispettivo input form già formattata
+              $('input[name="free_match[date]"]').val(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+              if($('input[name="free_match[latitude]"]').val())
+                if($('input[name="player_to_add[]"]').val()){
+                  $('button[name="action"]').disabled = false;
+                  $('button[name="action"]').prop('disabled', false);
+                }
+           });
+
+        });
+
+        function initAutocomplete() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -33.8688, lng: 151.2195},
+            zoom: 13,
+            mapTypeId: 'roadmap',
+            mapTypeControl: false,
+            styles: [
+                {
+                    "featureType": "landscape",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#FFA800"
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.man_made",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.man_made",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#679714"
+                        },
+                        {
+                            "saturation": 33.4
+                        },
+                        {
+                            "lightness": -25.4
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.attraction",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.business",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.government",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.medical",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.place_of_worship",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.school",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.sports_complex",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text",
+                    "stylers": [
+                        {
+                            "lightness": "65"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#53FF00"
+                        },
+                        {
+                            "saturation": -73
+                        },
+                        {
+                            "lightness": 40
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#FBFF00"
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#00FFFD"
+                        },
+                        {
+                            "lightness": 30
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#00BFFF"
+                        },
+                        {
+                            "saturation": 6
+                        },
+                        {
+                            "lightness": 8
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                }
+                ]
+          });
+
+          // Create the search box and link it to the UI element.
+          var input = document.getElementById('pac-input');
+          var searchBox = new google.maps.places.SearchBox(input);
+          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+          // Bias the SearchBox results towards current map's viewport.
+          map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+          });
+
+          var markers = [];
+          // Listen for the event fired when the user selects a prediction and retrieve
+          // more details for that place.
+          searchBox.addListener('places_changed', function() {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+              return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function(marker) {
+              marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function(place) {
+              if (!place.geometry) {
+                console.log("Returned place contains no geometry");
+                return;
+              }
+              var icon = {
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(25, 25)
+              };
+              console.log("lat: "+place.geometry.location.lat()+" & lon: "+place.geometry.location.lng());
+              $('input[name="free_match[latitude]"]').val(place.geometry.location.lat());
+              $('input[name="free_match[longitude]"]').val(place.geometry.location.lng());
+              if($('input[name="free_match[date]"]').val())
+                  if($('input[name="player_to_add[]"]').val()){
+                  $('button[name="action"]').prop('disabled', false);
+              }
+              // Create a marker for each place.
+              markers.push(new google.maps.Marker({
+                map: map,
+                icon: icon,
+                title: place.name,
+                position: place.geometry.location
+              }));
+
+
+              if (place.geometry.viewport) {
+                // Only geocodes have viewport.
+                bounds.union(place.geometry.viewport);
+              } else {
+                bounds.extend(place.geometry.location);
+              }
+            });
+            map.fitBounds(bounds);
+          });
+        }
+
+      </script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&libraries=places&callback=initAutocomplete"
+           async defer ></script>
+<% end %>
+<script>
+
+
+  document.addEventListener('turbolinks:before-visit', function() {
+    elem2 = document.querySelector('.chips');
+    instance2 = M.Chips.getInstance(elem2);
+    if (instance2){
+      instance2.destroy();
+    }
+  });
+
+  document.addEventListener('turbolinks:load', function() {
+    var elem = document.querySelector('.chips');
+    var options = {
+      autocompleteOptions:{
+        data: {
+          <% (User.where('id != ?', current_user.id)).each do |user| %>
+          '<%= user.email %>':'https://365randommuppets.files.wordpress.com/2014/08/219-animal.jpg?w=128',
+          <%end%>
+        },
+        limit: Infinity,
+        minLength: 1
+      },
+        placeholder: 'Cerca un utente',
+        secondaryPlaceholder: '+1?',
+        onChipSelect: function(elem){console.log(elem);},
+        onChipDelete: function(elem){
+          var index = $(elem[0].M_Chips.$chips).size();
+          if(index == 0){
+            $('button[name="action"]').disabled = true;
+            $('button[name="action"]').prop('disabled', true);
+          }
+        },
+        onChipAdd: function(elem){
+          //console.log(elem);
+          var index = $(elem[0].M_Chips.$chips).size();
+          $(elem[0].M_Chips.$chips[index - 1]).append('<img src="https://365randommuppets.files.wordpress.com/2014/08/219-animal.jpg?w=128">');
+          $('<input>').attr({
+            type: 'hidden',
+            name: 'player_to_add[]',
+            value: elem[0].M_Chips.chipsData[index - 1].tag,
+          }).appendTo('form');
+          if($('input[name="free_match[latitude]"]').val())
+            if($('input[name="free_match[date]"]').val()) {
+                $('button[name="action"]').disabled = false;
+                $('button[name="action"]').prop('disabled', false);
+                }
+              }
+    };
+    $('input[name="team[name]"]').attr("autocomplete","off");
+    var instances = M.Chips.init(elem, options);
+    var instance = M.Chips.getInstance(elem);
+    //console.log(instance);
+  });
+</script>
+<style>
+.chips .input{
+  width: 100% !important;
+}
+.chips input::placeholder{
+  color:black;
+  opacity: 0.5; /* Firefox */
+  font-weight: 400;
+}
+.chips{
+  border:none;
+}
+.chip{
+}
+</style>

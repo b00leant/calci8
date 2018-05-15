@@ -1,0 +1,44 @@
+
+<div class="row">
+  <div class="col s12 center-align">
+    <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"> <!-- notice the "circle" class --><br>
+    <h6>Kermit the Frog</h6>
+    <span class="grey-text grey-darken-2"><%= @user.email %></span>
+  </div>
+</div>
+<div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a href="#test1">Squadre</a></li>
+        <li class="tab col s3"><a class="active" href="#test2">Diario</a></li>
+        <li class="tab col s3 disabled"><a href="#test3">Centri Sportivi</a></li>
+        <li class="tab col s3"><a href="#test4">Statistiche</a></li>
+      </ul>
+    </div>
+    <div id="test1" class="col s12">
+      <div class="section">
+          <div class="places-grid">
+            <div class="row">
+              <% @teams.each do |team| %>
+              <div class="col s4 l4 m4 places-holder">
+                <div class="card hoverable">
+                  <div class="card-image materialboxed" width="50">
+                    <span class="picture responsive-img"></span>
+                  </div>
+                  <div class="card-content mar-bottom">
+                        <i class="material-icons">delete</i>
+                  </div>
+                  <div class="card-action">
+                    <%= link_to "Team", team %>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div id="test2" class="col s12">Test 2</div>
+    <div id="test3" class="col s12">Test 3</div>
+    <div id="test4" class="col s12">Test 4</div>
+  </div>

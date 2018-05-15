@@ -1,0 +1,91 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "materialize/components/color-variables";
+$primary-color: color("green", "darken-3") !default;
+@import 'materialize';
+@import "themes/dark/green/mdDateTimePicker";
+.collection li.collection-item.active{
+  background-color: #fff;
+  color: #000;
+}
+
+/*======= Map Styling ============*/
+.gmnoprint a, .gmnoprint span {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}
+#GMapsID div div a div img{
+    display:none;
+}
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}
+/*
+.collection .collection-item{
+  border-bottom: none;
+}
+.collection{
+  border:none;
+}*/
+nav a:hover {
+  color: color("grey", "darken-3");
+   background-color: color("green", "darken-3");
+}
+a.brand-logo:visited{color: white;}
+a{color: black;background: none;}
+a:hover{color: black;background: none;}
+a.btn{color:white}
+#pac-input {
+        background-color: #fff;
+        //font-family: Roboto;
+        //font-size: 15px;
+        color:black;
+        font-weight: 300;
+        text-overflow: ellipsis;
+        //text-align: center;
+        font-weight: 400;
+        //margin-left: 25%;
+        //width: 50%;
+      }
+#pac-input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color:black;
+    opacity: 0.5; /* Firefox */
+    font-weight: 400;
+}
+#pac-container {
+  padding-bottom: 12px;
+  margin-right: 0px;
+
+}
+
+/* label focus color */
+  input#pac-input input[type=text]:focus + label {
+    color: color("green", "darken-3") !important;
+}
+/* label underline focus color */
+  input#pac-input input[type=text]:focus {
+    border-bottom: 1px solid color("green", "darken-3") !important;
+    box-shadow: 0 1px 0 0 #000 !important;
+  }

@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Free Matches</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @free_matches.each do |free_match| %>
+      <tr>
+        <td><%= link_to 'Show', free_match %></td>
+        <td><%= link_to 'Edit', edit_free_match_path(free_match) %></td>
+        <td><%= link_to 'Destroy', free_match, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Free Match', new_free_match_path %>

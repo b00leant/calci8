@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row">
+    <h3>Aggiungi un giocatore</h3>
+  <div class="col s12">
+  <%= form_for @team, :url => {:action => "add_player_done"},:method => :post  do |f| %>
+    <div class="row">
+      <div class="chips">
+      </div>
+    </div>
+      <%= f.submit class: "btn btn-primary" %>
+  <%end%>
+  </div>
+</div>
+</div>
+<script>
+
+
+document.addEventListener('turbolinks:before-visit', function() {
+  elem2 = document.querySelector('.chips');
+  instance2 = M.Chips.getInstance(elem2);
+  if (instance2){
+    instance2.destroy();
+  }
+});
+
+document.addEventListener('turbolinks:load', function() {
+  var elem = document.querySelector('.chips');
+  var options = {
+    autocompleteOptions:{
+      data: {
+        <% (User.where('id != ?', current_user.id)).each do |user| %>
+        '<%= user.email %>':'https://365randommuppets.files.wordpress.com/2014/08/219-animal.jpg?w=128',
+        <%end%>
+      },
+      limit: Infinity,
+      minLength: 1
+    },
+      placeholder: 'Cerca un utente',
+      secondaryPlaceholder: '+1?',
+      onChipSelect: function(elem){console.log(elem);},
+      onChipAdd: function(elem){
+        //console.log(elem);
+        var index = $(elem[0].M_Chips.$chips).size();
+        //console.log($(elem[0].M_Chips.$chips[index - 1]).append('<img src="https://365randommuppets.files.wordpress.com/2014/08/219-animal.jpg?w=128">'));
+        $('<input>').attr({
+          type: 'hidden',
+          name: 'player_to_add[]',
+          value: elem[0].M_Chips.chipsData[index - 1].tag,
+      }).appendTo('form');
+        }
+  };
+  $('input[name="team[name]"]').attr("autocomplete","off");
+  var instances = M.Chips.init(elem, options);
+  var instance = M.Chips.getInstance(elem);
+  //console.log(instance);
+});
+</script>
+<style>
+.chips .input{
+  width: 100% !important;
+}
+.chips{
+  border:none;
+}
+.chip{
+}
+</style>

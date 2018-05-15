@@ -1,0 +1,439 @@
+<%= form_with(model: match, local: true) do |form| %>
+  <% if match.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(match.errors.count, "error") %> prohibited this match from being saved:</h2>
+
+      <ul>
+      <% match.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= form.hidden_field :date %>
+  <%= form.hidden_field :latitude %>
+  <%= form.hidden_field :longitude %>
+  <div class="container center-align">
+    <h5>Crea una partita</h5>
+    <a class="btn waves-effect waves-light green darken-2" id="date_input">Data
+      <i class="material-icons right">date_range</i>
+    </a>
+    <a class="btn waves-effect waves-light green darken-2" id="time_input">Orario
+      <i class="material-icons right">date_range</i>
+    </a>
+    <div class="input-field col center-align">
+        <input id="pac-input" class="controls" type="text" placeholder="Indirizzo" >
+        <div id="map" style="height:300px;margin-top:2em"></div>
+    </div>
+    <h5>Seleziona le squadre</h5>
+    <div class="row">
+    <div class="col s4 input-field">
+      <i class="icon-soccer-shoe prefix"></i>
+        <input type="text" name="home" id="home-input" class="autocompletehome" style="text-align:center" autocomplete="off">
+      <label for="home-input" style="margin-left:3rem;margin-right:0;text-align:center">In casa</label>
+    </div>
+    <div class="col s4"><h4>VS</h4></div>
+    <div class="col s4 input-field right-align">
+
+        <input type="text" name="host" id="host-input" class="autocompletehost" style="text-align:center" autocomplete="off">
+        <i class="icon-soccer-shoe prefix"></i>
+        <label for="host-input" style="margin-right:3rem;margin-left:0;text-align:center">Ospite</label>
+    </div>
+    <div class="actions">
+      <!--%= form.submit %-->
+      <%= button_tag(type: 'submit', class: "green darken-2 btn waves-effect waves-light",name: 'action', disabled: true) do %>
+        <i class="icon-soccer-court"></i> Procedi
+      <% end %>
+    </div>
+  </div>
+  <script>
+        // This example adds a search box to a map, using the Google Place Autocomplete
+        // feature. People can enter geographical searches. The search box will return a
+        // pick list containing a mix of places and predicted search terms.
+
+        // This example requires the Places library. Include the libraries=places
+        // parameter when you first load the API. For example:
+        // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+        //document.addEventListener("turbolinks:load", function() {
+        $( document ).ready(function() {
+          $('#host-input').change(function(){
+            console.log($(this).val());
+            if($('input[name="match[latitude]"]').val())
+              if($('input[name="match[date]"]').val())
+                if($(this).val())
+                  if($('#home-input').val()){
+                    $('button[name="action"]').disabled = false;
+                    $('button[name="action"]').prop('disabled', false);
+                  }
+          });
+          $('#home-input').change(function(){
+            if($('input[name="match[latitude]"]').val())
+              if($('input[name="match[date]"]').val())
+                if($(this).val())
+                  if($('#host-input').val()){
+                    $('button[name="action"]').disabled = false;
+                    $('button[name="action"]').prop('disabled', false);
+                  }
+          });
+          $('input.autocompletehome').autocomplete({
+                data: {
+                  <% current_user.teams.each do |team| %>
+                  '<%= team.id %>':null,
+                  <%end%>
+                  //"Apple": null,
+                  //"Microsoft": null,
+                  //"Google": 'https://placehold.it/250x250'
+                },
+              });
+              $('input.autocompletehost').autocomplete({
+                    data: {
+                      <% (Team.all - current_user.teams).each do |team| %>
+                      '<%= team.id %>':null,
+                      <%end%>
+                      //"Apple": null,
+                      //"Microsoft": null,
+                      //"Google": 'https://placehold.it/250x250'
+                    },
+                  });
+
+            dateToggleButton = document.getElementById("date_input");
+            dialog_date = new mdDateTimePicker["default"]({
+              type: 'date',
+              future: moment().add(1, 'years'),
+              trigger: dateToggleButton
+            });
+            timeToggleButton = document.getElementById("time_input");
+            dialog_time = new mdDateTimePicker["default"]({
+              type: 'time',
+              future: moment().add(1, 'years'),
+              trigger: timeToggleButton
+            });
+            $('#mddtp-time__AM').html('AM');
+            $('#mddtp-time__PM').html('PM');
+            dateToggleButton.addEventListener("click", function() {
+               return dialog_date.toggle();
+             });
+            timeToggleButton.addEventListener("click", function() {
+              //dialog_date.time = moment();
+              return dialog_time.toggle();
+            });
+
+            dateToggleButton.addEventListener("onOk", function(e) {
+              dialog_time.time = dialog_date.time;
+              $("#date_input").html(dialog_date.time.format('L'));
+              console.log(dialog_date.time);
+            });
+            timeToggleButton.addEventListener("onOk", function(e) {
+              $("#time_input").html(dialog_time.time.format('HH:MM'));
+              console.log(dialog_time.time);
+              console.log(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+
+              // Salvo la data nel rispettivo input form già formattata
+              $('input[name="match[date]"]').val(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+              if($('input[name="match[latitude]"]').val())
+                if($('#host-input').val())
+                  if($('#home-input')){
+                    $('button[name="action"]').disabled = false;
+                    $('button[name="action"]').prop('disabled', false);
+              }
+           });
+
+        });
+
+        function initAutocomplete() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -33.8688, lng: 151.2195},
+            zoom: 13,
+            mapTypeId: 'roadmap',
+            mapTypeControl: false,
+            styles: [
+                {
+                    "featureType": "landscape",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#FFA800"
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.man_made",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.man_made",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#679714"
+                        },
+                        {
+                            "saturation": 33.4
+                        },
+                        {
+                            "lightness": -25.4
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.attraction",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.business",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.government",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.medical",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.place_of_worship",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.school",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.sports_complex",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text",
+                    "stylers": [
+                        {
+                            "lightness": "65"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#53FF00"
+                        },
+                        {
+                            "saturation": -73
+                        },
+                        {
+                            "lightness": 40
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#FBFF00"
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#00FFFD"
+                        },
+                        {
+                            "lightness": 30
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "hue": "#00BFFF"
+                        },
+                        {
+                            "saturation": 6
+                        },
+                        {
+                            "lightness": 8
+                        },
+                        {
+                            "gamma": 1
+                        }
+                    ]
+                }
+                ]
+          });
+
+          // Create the search box and link it to the UI element.
+          var input = document.getElementById('pac-input');
+          var searchBox = new google.maps.places.SearchBox(input);
+          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+          // Bias the SearchBox results towards current map's viewport.
+          map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+          });
+
+          var markers = [];
+          // Listen for the event fired when the user selects a prediction and retrieve
+          // more details for that place.
+          searchBox.addListener('places_changed', function() {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+              return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function(marker) {
+              marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function(place) {
+              if (!place.geometry) {
+                console.log("Returned place contains no geometry");
+                return;
+              }
+              var icon = {
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(25, 25)
+              };
+              console.log("lat: "+place.geometry.location.lat()+" & lon: "+place.geometry.location.lng());
+              $('input[name="match[latitude]"]').val(place.geometry.location.lat());
+              $('input[name="match[longitude]"]').val(place.geometry.location.lng());
+              if($('input[name="match[date]"]').val())
+                if($('#host-input').val())
+                  if($('#home-input')){
+                  $('button[name="action"]').prop('disabled', false);
+              }
+              // Create a marker for each place.
+              markers.push(new google.maps.Marker({
+                map: map,
+                icon: icon,
+                title: place.name,
+                position: place.geometry.location
+              }));
+
+              /*geocoder = new google.maps.Geocoder();
+              geocoder.geocode( { 'address': address}, function(results, status) {
+                // and this is function which processes response
+                if (status == google.maps.GeocoderStatus.OK) {
+                  console.log("lat is"+ place.geometry.location.lat());
+                  console.log("lon is"+ place.geometry.location.lng());
+
+                  alert( loc ); // the place where loc contains geocoded coordinates
+
+                } else {
+                  alert("Geocode was not successful for the following reason: " + status);
+                }
+              });*/
+
+              if (place.geometry.viewport) {
+                // Only geocodes have viewport.
+                bounds.union(place.geometry.viewport);
+              } else {
+                bounds.extend(place.geometry.location);
+              }
+            });
+            map.fitBounds(bounds);
+          });
+        }
+
+      </script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&libraries=places&callback=initAutocomplete"
+           async defer ></script>
+<% end %>

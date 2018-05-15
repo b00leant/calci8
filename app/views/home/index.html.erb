@@ -1,0 +1,261 @@
+<div class="row" style="margin-top:120px">
+    <div id="test1" class="col s12 offset-m2 m8 offset-l3 l6">
+      <% if user_signed_in? %>
+      <div class="row">
+        <a href="<%=new_team_path%>" class="col s12 waves-effect waves-light btn green darken-3" style="margin:0.2em;"><i style="font-size: 2em;margin-right:0.5em" class="icon-soccer-shoe"></i>Crea Squadra</a>
+        <a href="<%=new_free_match_path%>" class="col s12 waves-effect waves-light btn green darken-3"style="margin:0.2em;"><i style="font-size: 2em;margin-right:0.5em" class="icon-soccer-court"></i>Organizza Amichevole</a>
+        <a href="<%=new_match_path%>" class="col s12 waves-effect waves-light btn green darken-3"style="margin:0.2em;"><i style="font-size: 2em;margin-right:0.5em" class="icon-soccer-court"></i>Organizza Partita</a>
+      </div>
+      <% end %>
+      <ul id="" class="collection">
+        <li class="collection-header center-align"><h4>News</h4></li>
+        <% if @collection.empty? == false%>
+        <% @collection.each do |item| %>
+        <%if item.class.name == 'Match'%>
+        <%= render partial: "items/match", locals: {match: item}%>
+        <%end%>
+        <%if item.class.name == 'FreeMatch'%>
+        <%= render partial: "items/free_match", locals: {free_match: item}%>
+        <%end%>
+        <%if item.class.name == 'Team'%>
+        <%= render partial: "items/team", locals: {team: item}%>
+        <%end%>
+        <% end %>
+        <% end %>
+      </ul>
+    </div>
+</div>
+<script>
+
+var numMatchItems = $('.match_item').length;
+var markers = [];
+var maps = [];
+function initMap() {
+  $('.match_item').each(function(i, obj) {
+    var point = {lat: $(obj).data("la"), lng: $(obj).data("lo"), zoom: 17};
+    var latlng = new google.maps.LatLng(point.lat, point.lng);
+    maps[i] = new google.maps.Map($(this).find('#map')[0], {
+        zoom: point.zoom,
+        center: latlng,
+        styles: [
+            {
+                "featureType": "landscape",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#FFA800"
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#679714"
+                    },
+                    {
+                        "saturation": 33.4
+                    },
+                    {
+                        "lightness": -25.4
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.attraction",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.business",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.government",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.medical",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.place_of_worship",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.school",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.sports_complex",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text",
+                "stylers": [
+                    {
+                        "lightness": "65"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#53FF00"
+                    },
+                    {
+                        "saturation": -73
+                    },
+                    {
+                        "lightness": 40
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#FBFF00"
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#00FFFD"
+                    },
+                    {
+                        "lightness": 30
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#00BFFF"
+                    },
+                    {
+                        "saturation": 6
+                    },
+                    {
+                        "lightness": 8
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            }
+            ]
+            });
+
+    markers[i] = new google.maps.Marker({
+        position: latlng,
+        map: maps[i]
+    });
+  });
+};
+
+if(window.google){
+  initMap();
+} else{
+  $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&callback=initMap', {
+    crossDomain: true,
+    dataType: 'script'
+  });
+}
+
+</script>

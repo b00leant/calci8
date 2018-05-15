@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="col s12 center-align">
+    <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"> <!-- notice the "circle" class --><br>
+    <h6><%= @team.name %></h6>
+    <span>
+      <% if @team.matches.size >0%>
+      Partite collegate: <%=@team.matches.size%>
+      <%else%>
+      Nessuna partita collegata
+      <%end%>
+    </span><br>
+    <% if current_user && current_user.has_role?(:manager, @team) %>
+  <%= link_to 'Edit', edit_team_path(@team) %> |
+  <%= link_to 'Back', teams_path %>
+  <%end%>
+  </div>
+</div>
+
+<div class="row center-align">
+  <h4> Formazione </h4>
+  <div class="col s12">
+    <div class="section">
+        <div class="places-grid">
+          <div class="row">
+            <% @team.users.each do |user| %>
+            <div class="col s2 l2 m2 places-holder center-align">
+              <div class="card hoverable"><img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img">
+                <div class="card-content mar-bottom">
+                  Nome Giocatore
+                </div>
+                <div class="card-action">
+                  <%= link_to "Giocatore", user %>
+                </div>
+              </div>
+            </div>
+            <% end %>
+            <div class="col s2 l2 m2 places-holder center-align">
+              <% if current_user && current_user.has_role?(:manager, @team) %>
+              <%= link_to "Giocatore",  add_player_conf_path(@team)%>
+              <%end%>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <% if current_user && current_user.has_role?(:manager, @team) %>
+  <a href="<%=new_match_path%>" class="col s12 waves-effect waves-light btn green darken-3"style="margin:0.2em;"><i style="font-size: 2em;margin-right:0.5em" class="icon-soccer-court"></i>Organizza Partita</a>
+  <% end %>
+</div>
+
+<div class="row center-align">
+  <h4> Diario </h4>
+  <!--
+    <div id="test1" class="col s12">
+      <div class="section">
+          <div class="places-grid">
+            <div class="row">
+              <% @matches.each do |match| %>
+              <div class="col s4 l4 m4 places-holder">
+                <div class="card hoverable">
+                  <div class="card-image materialboxed" width="50">
+                    <span class="picture responsive-img"></span>
+                  </div>
+                  <div class="card-content mar-bottom">
+                        <i class="material-icons">delete</i>
+                  </div>
+                  <div class="card-action">
+                    <%= link_to "Partita", match %>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+            </div>
+          </div>
+      </div>
+    </div>
+  -->
+
+  </div>
