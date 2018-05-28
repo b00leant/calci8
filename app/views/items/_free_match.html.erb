@@ -1,8 +1,7 @@
-<li class="collection-item free_match_item" data-la="<%= free_match.latitude%>" data-lo="<%= free_match.longitude %>">
-    <div class="card">
+<li class="collection-item free_match_item card" data-la="<%= free_match.latitude%>" data-lo="<%= free_match.longitude %>">
    <div class="section">
      <div class="card-image">
-       <div id="map0" style="height:200px"></div>
+       <div id="map" style="height:200px"></div>
         <span class="card-title black-text">Nome della partita</span>
        <a class="btn-floating halfway-fab waves-effect waves-green white">
          <i class="fas fa-futbol" style="color: black !important"></i></a>
@@ -18,7 +17,6 @@
       </div>
       <div class="col s12 m8">
       <h6 class="center-align">Partecipanti</h6>
-      <h3 class="center-align">3/12</h3></div>
+      <h3 class="center-align"><%= free_match.users.count%></h3></div>
     </div>
-  </div>
 </li>

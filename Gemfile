@@ -38,6 +38,7 @@ gem 'jquery-turbolinks'
 gem 'md-date-time-picker-rails'
 gem 'omniauth-facebook'
 
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

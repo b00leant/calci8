@@ -77,67 +77,67 @@
                   }
           });
           $('input.autocompletehome').autocomplete({
-                data: {
-                  <% current_user.teams.each do |team| %>
-                  '<%= team.id %>':null,
-                  <%end%>
-                  //"Apple": null,
-                  //"Microsoft": null,
-                  //"Google": 'https://placehold.it/250x250'
-                },
-              });
-              $('input.autocompletehost').autocomplete({
-                    data: {
-                      <% (Team.all - current_user.teams).each do |team| %>
-                      '<%= team.id %>':null,
-                      <%end%>
-                      //"Apple": null,
-                      //"Microsoft": null,
-                      //"Google": 'https://placehold.it/250x250'
-                    },
-                  });
+            data: {
+              <% current_user.teams.each do |team| %>
+              '<%= team.id %>':null,
+              <%end%>
+              //"Apple": null,
+              //"Microsoft": null,
+              //"Google": 'https://placehold.it/250x250'
+            },
+          });
+          $('input.autocompletehost').autocomplete({
+            data: {
+              <% (Team.all - current_user.teams).each do |team| %>
+              '<%= team.id %>':null,
+              <%end%>
+              //"Apple": null,
+              //"Microsoft": null,
+              //"Google": 'https://placehold.it/250x250'
+            },
+          });
 
-            dateToggleButton = document.getElementById("date_input");
-            dialog_date = new mdDateTimePicker["default"]({
-              type: 'date',
-              future: moment().add(1, 'years'),
-              trigger: dateToggleButton
-            });
-            timeToggleButton = document.getElementById("time_input");
-            dialog_time = new mdDateTimePicker["default"]({
-              type: 'time',
-              future: moment().add(1, 'years'),
-              trigger: timeToggleButton
-            });
-            $('#mddtp-time__AM').html('AM');
-            $('#mddtp-time__PM').html('PM');
-            dateToggleButton.addEventListener("click", function() {
-               return dialog_date.toggle();
-             });
-            timeToggleButton.addEventListener("click", function() {
-              //dialog_date.time = moment();
-              return dialog_time.toggle();
-            });
-
-            dateToggleButton.addEventListener("onOk", function(e) {
-              dialog_time.time = dialog_date.time;
-              $("#date_input").html(dialog_date.time.format('L'));
-              console.log(dialog_date.time);
-            });
-            timeToggleButton.addEventListener("onOk", function(e) {
-              $("#time_input").html(dialog_time.time.format('HH:MM'));
-              console.log(dialog_time.time);
-              console.log(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
-
-              // Salvo la data nel rispettivo input form già formattata
-              $('input[name="match[date]"]').val(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
-              if($('input[name="match[latitude]"]').val())
-                if($('#host-input').val())
-                  if($('#home-input')){
-                    $('button[name="action"]').disabled = false;
-                    $('button[name="action"]').prop('disabled', false);
-              }
+          dateToggleButton = document.getElementById("date_input");
+          dialog_date = new mdDateTimePicker["default"]({
+            type: 'date',
+            future: moment().add(1, 'years'),
+            trigger: dateToggleButton
+          });
+          timeToggleButton = document.getElementById("time_input");
+          dialog_time = new mdDateTimePicker["default"]({
+            type: 'time',
+            future: moment().add(1, 'years'),
+            trigger: timeToggleButton
+          });
+          $('#mddtp-time__AM').html('AM');
+          $('#mddtp-time__PM').html('PM');
+          dateToggleButton.addEventListener("click", function() {
+             return dialog_date.toggle();
            });
+          timeToggleButton.addEventListener("click", function() {
+            //dialog_date.time = moment();
+            return dialog_time.toggle();
+          });
+
+          dateToggleButton.addEventListener("onOk", function(e) {
+            dialog_time.time = dialog_date.time;
+            $("#date_input").html(dialog_date.time.format('L'));
+            console.log(dialog_date.time);
+          });
+          timeToggleButton.addEventListener("onOk", function(e) {
+            $("#time_input").html(dialog_time.time.format('HH:MM'));
+            console.log(dialog_time.time);
+            console.log(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+
+            // Salvo la data nel rispettivo input form già formattata
+            $('input[name="match[date]"]').val(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+            if($('input[name="match[latitude]"]').val())
+              if($('#host-input').val())
+                if($('#home-input')){
+                  $('button[name="action"]').disabled = false;
+                  $('button[name="action"]').prop('disabled', false);
+            }
+         });
 
         });
 

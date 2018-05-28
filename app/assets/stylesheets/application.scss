@@ -22,6 +22,28 @@ $primary-color: color("green", "darken-3") !default;
   background-color: #fff;
   color: #000;
 }
+.card-action a{
+  @extend .green-text, .text-darken-2;
+}
+.team-card-header{
+  color:#fff !important;
+}
+img.team-member-icon:not:first-child{
+  margin-left:-1em;
+}
+
+.matches-collection li{
+  padding:0 !important;
+}
+
+.collection-item.card{
+    margin-top:1em !important;
+    margin-bottom:1em !important;
+}
+
+h2,h2,h3,h4,h5,h6{
+  @extend .green-text, .text-darken-2;
+}
 
 /*======= Map Styling ============*/
 .gmnoprint a, .gmnoprint span {
