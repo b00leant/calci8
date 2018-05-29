@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180515103714) do
+ActiveRecord::Schema.define(version: 20180529091923) do
 
   create_table "free_matches", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20180515103714) do
   create_table "notifications", force: :cascade do |t|
     t.integer "recipient_id"
     t.integer "actor_id"
-    t.datetime "read_ad"
+    t.datetime "read_at"
     t.string "action"
     t.integer "notifiable_id"
     t.string "notifiable_type"

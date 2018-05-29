@@ -1,43 +1,60 @@
-<div class="container" style="margin-top:2em">
-  <div class="row card">
-    <div class="col s6 center-align green darken-2">
-      <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em;margin-bottom:0" class="circle responsive-img"> <!-- notice the "circle" class --><br>
-      <h6 class="team-card-header"><%= @team.name %></h6>
-      <% if current_user && current_user.has_role?(:manager, @team) %>
-      <a href="edit_team_path(@team)"class="waves-effect waves-light btn-flat"><i class="material-icons left">edit</i></a>
-      <!--%= link_to 'Back', teams_path %-->
-      <%end%>
-    </div>
-    <div class="col s6">
-      <span>
-        <% if @team.matches.size >0%>
-        <h6>Partite collegate</h6><%=@team.matches.size%>
-        <%else%>
-        Nessuna partita collegata
-        <%end%>
-      </span>
-      <h6>Formazione</h6>
-      <div class="valign-wrapper">
-        <% @team.users.take(1).each do |user| %>
-        <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="team-member-icon circle responsive-img">
-        <%end%>
-        <%if current_user.has_role?(:manager, @team)%>
-        <a class="btn-floating green darken-2">
-          <i class="material-icons">add</i>
-          <!--%=@team.users.all.count - 1%-->
-        </a>
-        <%else%>
-        <% if @team.users.count > 1 %>
-        <a>
-          <i class="material-icons">more_horiz</i>
-          <!--%=@team.users.all.count - 1%-->
-        </a>
-        <%end%>
-        <%end%>
+
+<div class="container">
+  <div class="row" style="padding-top:1em">
+    <div class="col s12 m3 xl4">
+      <div class="card">
+        <div class="card-image">
+          <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" class="team-logo circle">
+          <span class="card-title"><%= @team.name %></span>
+          <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+        </div>
+        <div class="card-content">
+          <% if current_user && current_user.has_role?(:manager, @team) %>
+          <a href="edit_team_path(@team)"class="waves-effect waves-light btn-flat"><i class="material-icons left">edit</i>Modifica</a>
+          <!--%= link_to 'Back', teams_path %-->
+          <%end%>
+          <% if @team.matches.size >0%>
+          <h6>Partite collegate</h6><%=@team.matches.size%>
+          <%else%>
+          Nessuna partita collegata
+          <%end%>
+          <h6>Formazione</h6>
+          <div class="valign-wrapper">
+            <% @team.users.take(1).each do |user| %>
+            <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="team-member-icon circle responsive-img">
+            <%end%>
+            <%if current_user.has_role?(:manager, @team)%>
+            <a class="btn-floating green darken-2">
+              <i class="material-icons">add</i>
+              <!--%=@team.users.all.count - 1%-->
+            </a>
+            <%else%>
+            <% if @team.users.count > 1 %>
+            <a>
+              <i class="material-icons">more_horiz</i>
+              <!--%=@team.users.all.count - 1%-->
+            </a>
+            <%end%>
+            <%end%>
+          </div>
+          <h6>Tipo</h6>
+          <div class="chip">
+            <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="Contact Person">
+            Calcetto
+          </div>
+          <div class="chip">
+            <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="Contact Person">
+            Calciotto
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row center-align">
-    <h4> Diario </h4>
+    <div class="col s12 m9 xl8">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Diario</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

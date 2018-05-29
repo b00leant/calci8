@@ -13,6 +13,12 @@ Rails.application.routes.draw do
   get 'users/:id' => 'users#show'
   # or
   resources :users, only: [:show]
+
+  resources :notifications do
+    collection do
+      post :mark_as_read
+    end
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get 'teams/:id/add_player_conf', :to => 'teams#add_player_conf', as: 'add_player_conf'
   post 'teams/:id/add_player_done', :to => 'teams#add_player_done', as: 'add_player_done'

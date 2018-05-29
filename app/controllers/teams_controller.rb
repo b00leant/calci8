@@ -41,6 +41,14 @@ class TeamsController < ApplicationController
     end
   end
 
+  # POST / senza view
+  def invite
+    if user_signed_in?
+      recipient = User.find(params[:recipient])
+      team = Team.find(params[:id])
+        Notification.create(recipient: recipient, actor: current_user, action: "invite",notifiable: team)
+    end
+  end
   # POST /teams
   # POST /teams.json
   def create
