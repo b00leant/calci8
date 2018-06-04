@@ -21,7 +21,16 @@
 //= require turbolinks
 //= require_tree .
 
+
+
 document.addEventListener('turbolinks:load', function() {
+  var tipelems = document.querySelectorAll('.tooltipped');
+  var tipinstances = M.Tooltip.init(tipelems, {
+    position: "top",
+    delay:1
+  });
+  var elems = document.querySelectorAll('.fixed-action-btn');
+  var instances = M.FloatingActionButton.init(elems, {direction:'left'});
   elem = document.querySelector('.sidenav-sidenav');
   instance = new M.Sidenav(elem, {});
   elem2 = document.querySelector('.notification-sidenav');
@@ -31,9 +40,15 @@ document.addEventListener('turbolinks:load', function() {
       //responsiveThreshold : 1920
     });
   $('.collapsible').collapsible();
-
 });
 document.addEventListener('turbolinks:before-visit', function() {
+  var tipelems = document.querySelectorAll('.tooltipped');
+  var tipinstances = M.Tooltip.init(tipelems, {
+    position: "top",
+    delay:1
+  });
+  var elems = document.querySelectorAll('.fixed-action-btn');
+  var instances = M.FloatingActionButton.init(elems, {direction:'left'});
   elem = document.querySelector('.sidenav-sidenav');
   elem2 = document.querySelector('.notification-sidenav');
   instance2 = M.Sidenav.getInstance(elem2);

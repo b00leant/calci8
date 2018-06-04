@@ -5,26 +5,36 @@
       <div class="card">
         <div class="card-image">
           <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" class="team-logo circle">
-          <span class="card-title"><%= @team.name %></span>
-          <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+          <div class="card-title">
+            <%= @team.name %>
+            <% if Notification.where(recipient: current_user, notifiable: @team, action: "invited").present? && !@team.users.where(id: current_user.id).present?%>
+            <%= form_tag(add_player_path(@team), :method => 'post') do %>
+              <%= submit_tag "Accetta invito", class: "btn green draken-2 white-text", style: "margin-top:1em" do %>
+              <i class="material-icons left">
+              <%end%>
+            <% end%>
+            <%end%>
+          </div>
+          <!--a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a-->
         </div>
         <div class="card-content">
           <% if current_user && current_user.has_role?(:manager, @team) %>
-          <a href="edit_team_path(@team)"class="waves-effect waves-light btn-flat"><i class="material-icons left">edit</i>Modifica</a>
+          <a href="<%=edit_team_path(@team)%>"class="waves-effect waves-light btn-flat"><i class="material-icons left">edit</i>Modifica</a>
+          <% end %>
           <!--%= link_to 'Back', teams_path %-->
-          <%end%>
+          <h6>Partite collegate</h6>
           <% if @team.matches.size >0%>
-          <h6>Partite collegate</h6><%=@team.matches.size%>
+          <%=@team.matches.size%>
           <%else%>
-          Nessuna partita collegata
+          <p>Nessuna partita collegata</p>
           <%end%>
           <h6>Formazione</h6>
           <div class="valign-wrapper">
-            <% @team.users.take(1).each do |user| %>
+            <% @team.users.take(3).each do |user| %>
             <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="team-member-icon circle responsive-img">
             <%end%>
-            <%if current_user.has_role?(:manager, @team)%>
-            <a class="btn-floating green darken-2">
+            <%if current_user && current_user.has_role?(:manager, @team)%>
+            <a href="<%=select_new_players_path(@team)%>"class="btn-floating green darken-2">
               <i class="material-icons">add</i>
               <!--%=@team.users.all.count - 1%-->
             </a>

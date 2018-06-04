@@ -18,6 +18,7 @@
 $primary-color: color("green", "darken-3") !default;
 @import 'materialize';
 @import "themes/dark/green/mdDateTimePicker";
+
 .collection li.collection-item.active{
   background-color: #fff;
   color: #000;
@@ -39,6 +40,9 @@ $primary-color: color("green", "darken-3") !default;
 }
 .team-banner img{
   width:100%;
+}
+body{
+  @extend .grey, .lighten-2;
 }
 .card-action a{
   @extend .green-text, .text-darken-2;
@@ -91,24 +95,25 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }*/
 nav a:hover {
   color: color("grey", "darken-3");
-   background-color: color("green", "darken-3");
+  background-color: color("green", "darken-3");
 }
 a.brand-logo:visited{color: white;}
 a{color: black;background: none;}
 a:hover{color: black;background: none;}
 a.btn{color:white}
 #pac-input {
-        background-color: #fff;
-        //font-family: Roboto;
-        //font-size: 15px;
-        color:black;
-        font-weight: 300;
-        text-overflow: ellipsis;
-        //text-align: center;
-        font-weight: 400;
-        //margin-left: 25%;
-        //width: 50%;
-      }
+  background-color: color("grey", "lighten-2");
+  //background-color: #fff;
+  //font-family: Roboto;
+  //font-size: 15px;
+  color:black;
+  font-weight: 300;
+  text-overflow: ellipsis;
+  //text-align: center;
+  font-weight: 400;
+  //margin-left: 25%;
+  //width: 50%;
+}
 #pac-input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color:black;
     opacity: 0.5; /* Firefox */
@@ -117,9 +122,7 @@ a.btn{color:white}
 #pac-container {
   padding-bottom: 12px;
   margin-right: 0px;
-
 }
-
 /* label focus color */
   input#pac-input input[type=text]:focus + label {
     color: color("green", "darken-3") !important;

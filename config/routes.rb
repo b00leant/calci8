@@ -19,7 +19,9 @@ Rails.application.routes.draw do
       post :mark_as_read
     end
   end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  get 'teams/:id/add_player_conf', :to => 'teams#add_player_conf', as: 'add_player_conf'
-  post 'teams/:id/add_player_done', :to => 'teams#add_player_done', as: 'add_player_done'
+  get 'teams/:id/select_new_players', :to => 'teams#select_new_players', as: 'select_new_players'
+  post 'teams/:id/invite', :to => 'teams#invite', as: 'invite'
+  post 'teams/:id/add_player', :to => 'teams#add_player', as: 'add_player'
 end

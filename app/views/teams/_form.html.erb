@@ -10,8 +10,13 @@
       </ul>
     </div>
   <% end %>
-  <%= form.text_field :name %>
+  <div class="input-field">
+    <i class="material-icons prefix">account_circle</i>
+    <%= form.text_field :name, id: "icon_prefix"%>
+    <label for="icon_prefix">Nome Squadra</label>
+  </div>
+
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit  class: "right btn green darken-2"%>
   </div>
 <% end %>

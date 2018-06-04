@@ -22,12 +22,14 @@ class TeamsController < ApplicationController
 
   def add_player
     @team = Team.find(params[:id])
-    if !current_user.has_role?(:manager, @team)
-      return redirect_to("/teams")
+    if Notification.where(recipient: current_user, notifiable: @team).present?
+      @team.users << current_user
+      current_user.add_role :player, @team
+      redirect_to team_path(@team)
     end
   end
 
-  def add_player_conf
+  def select_new_players
     @team = Team.find(params[:id])
     if !current_user.has_role?(:manager, @team)
       return redirect_to("/teams")
@@ -41,14 +43,6 @@ class TeamsController < ApplicationController
     end
   end
 
-  # POST / senza view
-  def invite
-    if user_signed_in?
-      recipient = User.find(params[:recipient])
-      team = Team.find(params[:id])
-        Notification.create(recipient: recipient, actor: current_user, action: "invite",notifiable: team)
-    end
-  end
   # POST /teams
   # POST /teams.json
   def create
@@ -67,22 +61,25 @@ class TeamsController < ApplicationController
     end
   end
 
-  def add_player_done
+  def invite
     @team = Team.find(params[:id])
-    params[:player_to_add].each do |email|
-      user = User.where(email: email)
-      if user.present?
-        @team.users << user
-        #user.add_role :player, @team
+    if user_signed_in? && current_user.has_role?(:manager, @team)
+      params[:player_to_add].each do |email|
+        user = User.where(email: email).first
+        if user.present?
+          recipient = user
+          team = Team.find(params[:id])
+          Notification.create(recipient: recipient, actor: current_user, action: "invited",notifiable: team)
+        end
       end
-    end
-    respond_to do |format|
-      if @team.update(team_params)
-        format.html { redirect_to @team, notice: 'Giocatori Aggiunti' }
-        format.json { render :show, status: :ok, location: @team }
-      else
-        format.html { render :edit }
-        format.json { render json: @team.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @team.update(team_params)
+          format.html { redirect_to @team, notice: 'Inviti spediti!' }
+          format.json { render :show, status: :ok, location: @team }
+        else
+          format.html { render :edit }
+          format.json { render json: @team.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -118,7 +115,7 @@ class TeamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def team_params
-      params.fetch(:team, {})
+      params.fetch(:team, {}).permit(:name)
     end
     def team_params_with_name
       params.require(:team).permit(:name)

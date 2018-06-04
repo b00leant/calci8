@@ -13,9 +13,13 @@
   <%= form.hidden_field :date %>
   <%= form.hidden_field :latitude %>
   <%= form.hidden_field :longitude %>
+  <% if @free_march_users.present? && @free_march_users.size > 0 %>
+  <% @free_march_users.each do |user| %>
+  <input type="hidden" name="player_to_add[]" value"<%=user.id%>"%>
+  <% end %>
+  <% end %>
 
   <div class="container">
-    <h3>Crea una partita amichevole</h3>
     <div class="section">
       <h5>Seleziona data e ora</h5>
       <a class= "btn waves-effect waves-light green darken-2" id="date_input">Data
@@ -35,6 +39,14 @@
     <div class="col s12">
       <div class="row">
         <div class="chips">
+          <% if @free_march_users.present? %>
+          <% @free_march_users.each do |user| %>
+          <div class="chip">
+            <img src="https://365randommuppets.files.wordpress.com/2014/08/219-animal.jpg?w=128" alt="Contact Person">
+            <%= user.email%>
+          </div>
+          <% end %>
+          <% end %>
         </div>
       </div>
     </div>
@@ -380,8 +392,11 @@
               $('input[name="free_match[latitude]"]').val(place.geometry.location.lat());
               $('input[name="free_match[longitude]"]').val(place.geometry.location.lng());
               if($('input[name="free_match[date]"]').val())
-                  if($('input[name="player_to_add[]"]').val()){
-                  $('button[name="action"]').prop('disabled', false);
+                if($('input[name="player_to_add[]"]').length >0 ){
+                $('button[name="action"]').prop('disabled', false);
+              }else{
+                console.log($('input[name="player_to_add[]"]'))
+                console.log("dopo la location qualcosa non è stato preso");
               }
               // Create a marker for each place.
               markers.push(new google.maps.Marker({
@@ -463,17 +478,17 @@
   });
 </script>
 <style>
-.chips .input{
-  width: 100% !important;
-}
-.chips input::placeholder{
-  color:black;
-  opacity: 0.5; /* Firefox */
-  font-weight: 400;
-}
-.chips{
-  border:none;
-}
-.chip{
-}
+  .chips .input{
+    width: 100% !important;
+  }
+  .chips input::placeholder{
+    color:black;
+    opacity: 0.5; /* Firefox */
+    font-weight: 400;
+  }
+  .chips{
+    border:none;
+  }
+  .chip{
+  }
 </style>

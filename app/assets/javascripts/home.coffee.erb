@@ -3,7 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 class Notifications
   constructor: ->
-    @notifications = $("[data-behaviour='notifications]'")
+    @notifications = $("[data-behaviour='notifications']")
     @setup() if @notifications.length > 0
 
   setup: ->
@@ -16,8 +16,11 @@ class Notifications
   handleSuccess: (data) =>
     console.log(data)
     items = $.map data, (notification) ->
-      "<a class='' href='#{notification.url}'>#{notification.actor} #{notification.action} #{notification.notifiable} </a>"
-    $("[data-behaviour='notifications-items]'").html(items)
+      "<a href='#{notification.url}' class='collection-item avatar'>
+        <i class='material-icons circle green'>insert_chart</i>
+        <span class='title'>#{notification.actor} #{notification.action} #{notification.notifiable.type}</span>
+      </a>"
+    $("[data-behaviour='notifications']").html(items)
 
 jQuery ->
   new Notifications

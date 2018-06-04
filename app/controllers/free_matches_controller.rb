@@ -22,6 +22,7 @@ class FreeMatchesController < ApplicationController
   # GET /free_matches/1/edit
   def edit
     @free_match = FreeMatch.find(params[:id])
+    @free_march_users = @free_match.users
     if !current_user.has_role?(:manager, @free_match)
       return redirect_to("/free_matches")
     end
