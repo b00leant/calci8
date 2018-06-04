@@ -3,7 +3,11 @@
   <div class="col s12 center-align grey lighten-2" style="padding-bottom:2em">
     <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"> <!-- notice the "circle" class --><br>
     <h6>Kermit the Frog</h6>
-    <span class="grey-text grey-darken-2"><%= @user.email %></span>
+    <p class="grey-text grey-darken-2"><%= @user.email %></p>
+    <% if current_user %>
+    <!-- Modal Trigger -->
+    <a href="#modal1"class="waves-effect waves-light btn modal-trigger btn white black-text"><i class="right material-icons">settings</i> Impostazioni</a>
+    <% end %>
   </div>
 </div>
 <div class="row">
@@ -62,6 +66,22 @@
     </div>
   </div>
 </div>
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <h5>Impostazioni</h5>
+    <p>Cosa vuoi modificare?</p>
+    <div class="collection">
+      <%= link_to('Impostazioni Giocatore', user_settings_path(current_user, anchor: "P"), class:"collection-item") %>
+      <%= link_to('Impostazioni Utente', user_settings_path(current_user, anchor: "U"), class:"collection-item") %>
+      <%= link_to('Impostazioni Notifiche', user_settings_path(current_user, anchor: "N"), class:"collection-item") %>
+    </div>
+  </div>
+  <!--div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div-->
+</div>
+
 <script>
 
   var numMatchItems = $('.free_match_item').length;
@@ -512,3 +532,9 @@
   }
 
 </script>
+
+<style>
+  .tabs .tab a:focus, .tabs .tab a:focus.active{
+    background-color: white;
+  }
+</style>

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   #routes.rb
   match 'users/:id' => 'users#show', via: :get
+  match 'users/:id/settings' => 'users#settings', via: :get, as: 'user_settings'
   # or
   get 'users/:id' => 'users#show'
   # or

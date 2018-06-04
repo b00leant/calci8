@@ -23,9 +23,6 @@ $primary-color: color("green", "darken-3") !default;
   background-color: #fff;
   color: #000;
 }
-.tabs .tab a:focus, .tabs .tab a:focus.active{
-  background-color: white;
-}
 .team-banner-header{
   margin-left: 90px;
   position: absolute;

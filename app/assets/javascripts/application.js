@@ -24,39 +24,45 @@
 
 
 document.addEventListener('turbolinks:load', function() {
-  var tipelems = document.querySelectorAll('.tooltipped');
-  var tipinstances = M.Tooltip.init(tipelems, {
+  var spy_elems = document.querySelectorAll('.scrollspy');
+  var spy_instances = M.ScrollSpy.init(spy_elems, {});
+  var tip_elems = document.querySelectorAll('.tooltipped');
+  var tip_instances = M.Tooltip.init(tip_elems, {
     position: "top",
     delay:1
   });
-  var elems = document.querySelectorAll('.fixed-action-btn');
-  var instances = M.FloatingActionButton.init(elems, {direction:'left'});
-  elem = document.querySelector('.sidenav-sidenav');
-  instance = new M.Sidenav(elem, {});
-  elem2 = document.querySelector('.notification-sidenav');
-  instance2 = new M.Sidenav(elem2, {edge: 'right'});
+  modal_elems = document.querySelectorAll('.modal');
+  modal_instances = M.Modal.init(modal_elems, {});
+  var fab_elems = document.querySelectorAll('.fixed-action-btn');
+  var fab_instances = M.FloatingActionButton.init(fab_elems, {direction:'left'});
+  sidenav_elem = document.querySelector('.sidenav-sidenav');
+  sidenav_instance = new M.Sidenav(sidenav_elem, {});
+  notification_elem = document.querySelector('.notification-sidenav');
+  notification_instance = new M.Sidenav(notification_elem, {edge: 'right'});
   $('.tabs').tabs({
       //swipeable : true,
       //responsiveThreshold : 1920
     });
   $('.collapsible').collapsible();
-});
-document.addEventListener('turbolinks:before-visit', function() {
-  var tipelems = document.querySelectorAll('.tooltipped');
-  var tipinstances = M.Tooltip.init(tipelems, {
-    position: "top",
-    delay:1
+  $('.modal-content a').click(function(){
+    if(modal_instances)
+      console.log(modal_instances[0].destroy());
   });
-  var elems = document.querySelectorAll('.fixed-action-btn');
-  var instances = M.FloatingActionButton.init(elems, {direction:'left'});
-  elem = document.querySelector('.sidenav-sidenav');
-  elem2 = document.querySelector('.notification-sidenav');
-  instance2 = M.Sidenav.getInstance(elem2);
-  if (instance2){
-    instance2.destroy();
+});
+document.addEventListener('turbolinks:before-cache', function() {
+  sidenav_elem = document.querySelector('.sidenav-sidenav');
+  notification_elem = document.querySelector('.notification-sidenav');
+  notification_instance = M.Sidenav.getInstance(notification_elem);
+  if (notification_instance){
+    notification_instance.destroy();
   }
-  instance = M.Sidenav.getInstance(elem);
-  if (instance){
-    instance.destroy();
+  sidenav_instance = M.Sidenav.getInstance(sidenav_elem);
+  if (sidenav_instance){
+    sidenav_instance.destroy();
+  }
+  modal_elems = document.querySelectorAll('.modal');
+  modal_instances = M.Modal.getInstance(modal_elems, {});
+  if(modal_instances){
+    modal_instances.destroy();
   }
 });
