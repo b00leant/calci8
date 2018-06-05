@@ -22,7 +22,7 @@
 //= require_tree .
 
 
-
+var sidenav_elem, sidenav_instance,notification_elem,notification_instance;
 document.addEventListener('turbolinks:load', function() {
   var spy_elems = document.querySelectorAll('.scrollspy');
   var spy_instances = M.ScrollSpy.init(spy_elems, {});
@@ -31,34 +31,37 @@ document.addEventListener('turbolinks:load', function() {
     position: "top",
     delay:1
   });
+  M.Modal._count = 0;
+  M.Sidenav._count = 0;
   modal_elems = document.querySelectorAll('.modal');
   modal_instances = M.Modal.init(modal_elems, {});
   var fab_elems = document.querySelectorAll('.fixed-action-btn');
   var fab_instances = M.FloatingActionButton.init(fab_elems, {direction:'left'});
   sidenav_elem = document.querySelector('.sidenav-sidenav');
-  sidenav_instance = new M.Sidenav(sidenav_elem, {});
+  sidenav_instance =  M.Sidenav.init(sidenav_elem, {});
   notification_elem = document.querySelector('.notification-sidenav');
-  notification_instance = new M.Sidenav(notification_elem, {edge: 'right'});
+  notification_instance = M.Sidenav.init(notification_elem, {edge: 'right'});
+  console.log("caricato turbolinks");
   $('.tabs').tabs({
       //swipeable : true,
       //responsiveThreshold : 1920
     });
   $('.collapsible').collapsible();
-  $('.modal-content a').click(function(){
-    if(modal_instances)
-      console.log(modal_instances[0].destroy());
-  });
 });
+
 document.addEventListener('turbolinks:before-cache', function() {
   sidenav_elem = document.querySelector('.sidenav-sidenav');
   notification_elem = document.querySelector('.notification-sidenav');
   notification_instance = M.Sidenav.getInstance(notification_elem);
   if (notification_instance){
     notification_instance.destroy();
+
+  }else{
   }
   sidenav_instance = M.Sidenav.getInstance(sidenav_elem);
   if (sidenav_instance){
     sidenav_instance.destroy();
+  }else{
   }
   modal_elems = document.querySelectorAll('.modal');
   modal_instances = M.Modal.getInstance(modal_elems, {});

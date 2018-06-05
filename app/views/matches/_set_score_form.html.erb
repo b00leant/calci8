@@ -1,0 +1,27 @@
+<%= form_with(model: match, local: true) do |form| %>
+<div class="row">
+  <div class="container col offset-s1 s10 offset-m3 m6">
+    <div class="card">
+      <div class="card-content black-text">
+      <span class="card-title">Inserisci il risultato</span>
+      <div class="row">
+        <div class="input-field col s6">
+          <i class="material-icons prefix">account_circle</i>
+          <input id="icon_prefix" type="number" name="match[home_score]" class="validate">
+          <label for="icon_prefix"><%=@home_team.name%></label>
+        </div>
+        <div class="input-field col s6">
+          <i class="material-icons prefix">account_circle</i>
+          <input id="icon_prefix" type="number" name="match[host_score]"class="validate">
+          <label for="icon_prefix"><%=@host_team.name%></label>
+        </div>
+      </div>
+        </div>
+        <div class="card-action">
+          <%= link_to "Cancella", root_path %>
+          <%= form.submit "Segna punteggio", class: "btn btn-primary green darken-3" %>
+        </div>
+    </div>
+  </div>
+</div>
+<% end %>

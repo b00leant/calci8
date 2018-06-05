@@ -1,4 +1,3 @@
-<h1>Editing Match</h1>
-
-<%= link_to 'Show', @match %> |
-<%= link_to 'Back', matches_path %>
+<div class="container center-align"><h5>Editing Match</h5></div>
+<%= render 'form', match: @match %>
+<%= link_to 'Indietro', match_path(@match), class: "btn green darken-3"%>

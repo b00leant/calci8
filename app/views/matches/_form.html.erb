@@ -14,7 +14,6 @@
   <%= form.hidden_field :latitude %>
   <%= form.hidden_field :longitude %>
   <div class="container center-align">
-    <h5>Crea una partita</h5>
     <a class="btn waves-effect waves-light green darken-2" id="date_input">Data
       <i class="material-icons right">date_range</i>
     </a>
@@ -57,7 +56,6 @@
         //document.addEventListener("turbolinks:load", function() {
         $( document ).ready(function() {
           $('#host-input').change(function(){
-            console.log($(this).val());
             if($('input[name="match[latitude]"]').val())
               if($('input[name="match[date]"]').val())
                 if($(this).val())
@@ -78,7 +76,9 @@
           $('input.autocompletehome').autocomplete({
             data: {
               <% current_user.teams.each do |team| %>
-              '<%= team.id %>':null,
+              <% if current_user.has_role?(:manager, team)%>
+              '<%= team.name %>':null,
+              <%end%>
               <%end%>
               //"Apple": null,
               //"Microsoft": null,
@@ -88,12 +88,15 @@
           $('input.autocompletehost').autocomplete({
             data: {
               <% (Team.all - current_user.teams).each do |team| %>
-              '<%= team.id %>':null,
+              '<%= team.name %>':null,
               <%end%>
               //"Apple": null,
               //"Microsoft": null,
               //"Google": 'https://placehold.it/250x250'
             },
+            onAutocomplete:function(a){
+              console.log(this);
+            }
           });
 
           dateToggleButton = document.getElementById("date_input");

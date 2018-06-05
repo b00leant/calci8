@@ -2,18 +2,35 @@
      <div class="card-image">
        <div id="map" style="height:200px"></div>
         <span class="card-title black-text">Nome della partita</span>
-       <a class="btn-floating halfway-fab waves-effect waves-green white">
-         <i class="fas fa-futbol" style="color: black !important"></i></a>
+       <!--a class="btn-floating halfway-fab waves-effect waves-green white">
+         <i class="fas fa-futbol" style="color: black !important"></i></a-->
      </div>
     <div class="card-content row">
+      <% match.teams.each do |team| %>
+      <% if team.has_role?(:manager, match) %>
       <div class="col s4 center-align">
-        <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img">
+        <h6><%= team.name %></h6>
+        <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="width:3em;height:3em" class="circle responsive-img">
       </div>
+      <% end %>
+      <% end %>
       <div class="col s4 center-align">
+        <% if match.home_score == nil %>
         <h3>VS</h3>
+        <% else %>
+        <h5><%=match.home_score%> - <%=match.host_score%></h5>
+        <% end %>
       </div>
+      <% match.teams.each do |team| %>
+      <% if team.has_role?(:manager, match) == false %>
       <div class="col s4 center-align">
-        <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img">
+        <h6><%= team.name %></h6>
+        <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="width:3em;height:3em" class="circle responsive-img">
       </div>
+      <% end %>
+      <% end %>
+    </div>
+    <div class="card-action">
+      <a href="<%= match_path(match) %>">Vai alla pagina</a>
     </div>
 </li>

@@ -1,4 +1,3 @@
-
 <div class="container">
   <div class="row" style="padding-top:1em">
     <div class="col s12 m3 xl4">
@@ -28,25 +27,6 @@
           <%else%>
           <p>Nessuna partita collegata</p>
           <%end%>
-          <h6>Formazione</h6>
-          <div class="valign-wrapper">
-            <% @team.users.take(3).each do |user| %>
-            <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="team-member-icon circle responsive-img">
-            <%end%>
-            <%if current_user && current_user.has_role?(:manager, @team)%>
-            <a href="<%=select_new_players_path(@team)%>"class="btn-floating green darken-2">
-              <i class="material-icons">add</i>
-              <!--%=@team.users.all.count - 1%-->
-            </a>
-            <%else%>
-            <% if @team.users.count > 1 %>
-            <a>
-              <i class="material-icons">more_horiz</i>
-              <!--%=@team.users.all.count - 1%-->
-            </a>
-            <%end%>
-            <%end%>
-          </div>
           <h6>Tipo</h6>
           <div class="chip">
             <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="Contact Person">
@@ -62,9 +42,47 @@
     <div class="col s12 m9 xl8">
       <div class="card">
         <div class="card-content">
-          <span class="card-title">Diario</span>
+          <span class="card-title">Formazione</span>
+          <h6>In panchina</h6>
+          <div class="collection">
+            <% @team.users.each do |user| %>
+            <div class="collection-item avatar">
+              <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="circle responsive-img">
+              <p><%= user.email %></p>
+            </div>
+            <%end%>
+          </div>
+          <h6>Titolari</h6>
+        </div>
+        <div class="card-action">
+          <%if current_user && current_user.has_role?(:manager, @team)%>
+          <a style="margin-top:1em" href="<%=select_new_players_path(@team)%>" class="">Invita Giocatore</a>
+          <a style="margin-top:1em" href="<%=select_new_players_path(@team)%>" class="">Modifica Ruoli</a>
+          <%end%>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="modal1" class="modal bottom-sheet">
+  <div class="modal-content">
+    <h4>Formazione</h4>
+    <ul class="collection">
+      <% @team.users.each do |user| %>
+      <li class="collection-item avatar">
+      <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" class="circle">
+      <span class="title">Title</span>
+      <p><%= user.email %><br>
+         Second Line
+      </p>
+      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+    </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Chiudi</a>
   </div>
 </div>

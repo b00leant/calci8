@@ -1,246 +1,272 @@
-<div id="map" style="height:300px"></div>
-<div class="container">
-  <div class="row">
-    <div class="col s4 center-align">
-      <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img">
+<div class="row">
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div id="map" style="height:200px"></div>
+      </div>
+      <div class="card-content row">
+        <div class="col s4 center-align">
+          <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" style="width:3em;height:3em" alt="" class="circle responsive-img">
+          <h6><%=@home_team.name%></h6>
+        </div>
+        <div class="col s4 center-align">
+          <% if @match.home_score == nil %>
+          <h3>VS</h3>
+          <% else %>
+          <h3><%=@match.home_score%> - <%=@match.host_score%></h3>
+          <% end %>
+        </div>
+        <div class="col s4 center-align">
+          <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" style="width:3em;height:3em" alt="" class="circle responsive-img">
+          <h6><%=@host_team.name%></h6>
+        </div>
+      </div>
+      <% if @user_team.has_role?(:manager, @match)%>
+      <div class="card-action">
+        <% if @match.date.past? && @match.home_score == nil%>
+        <%= link_to 'Segna Punteggio', set_match_score_path(@match) %>
+        <% end %>
+        <%= link_to 'Modifica', edit_match_path(@match) , class: ''%>
+      </div>
+      <% end %>
     </div>
-    <div class="col s4 center-align">
-      <h3>VS</h3>
+    <div class="card">
+      <div class="card-content black-text">
+          <span class="card-title">Descrizione</span>
+          <p>I am a very simple card. I am good at containing small bits of information.
+          I am convenient because I require little markup to use effectively.</p>
+        </div>
     </div>
-    <div class="col s4 center-align">
-      <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img">
-    </div>
+    <%= link_to 'Home', root_path , class: 'left btn btn-primary'%>
   </div>
 </div>
-<%= link_to 'Edit', edit_match_path(@match) , class: 'left btn btn-primary'%>
-<%= link_to 'Back', matches_path , class: 'left btn btn-primary'%>
+
 <script>
-var marker;
-var map;
-function initMap() {
-  var point = {lat: <%= @match.latitude%>, lng:<%= @match.longitude%>, zoom: 17};
-  var latlng = new google.maps.LatLng(point.lat, point.lng);
-  map = new google.maps.Map($('#map')[0], {
-      zoom: point.zoom,
-      center: latlng,
-      styles: [
-          {
-              "featureType": "landscape",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "hue": "#FFA800"
-                  },
-                  {
-                      "gamma": 1
-                  }
-              ]
-          },
-          {
-              "featureType": "landscape.man_made",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "on"
-                  }
-              ]
-          },
-          {
-              "featureType": "landscape.man_made",
-              "elementType": "geometry",
-              "stylers": [
-                  {
-                      "visibility": "on"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "hue": "#679714"
-                  },
-                  {
-                      "saturation": 33.4
-                  },
-                  {
-                      "lightness": -25.4
-                  },
-                  {
-                      "gamma": 1
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.attraction",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.business",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.government",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.medical",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.park",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "on"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.place_of_worship",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.school",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "poi.sports_complex",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "on"
-                  }
-              ]
-          },
-          {
-              "featureType": "road",
-              "elementType": "labels.text",
-              "stylers": [
-                  {
-                      "lightness": "65"
-                  }
-              ]
-          },
-          {
-              "featureType": "road.highway",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "hue": "#53FF00"
-                  },
-                  {
-                      "saturation": -73
-                  },
-                  {
-                      "lightness": 40
-                  },
-                  {
-                      "gamma": 1
-                  }
-              ]
-          },
-          {
-              "featureType": "road.arterial",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "hue": "#FBFF00"
-                  },
-                  {
-                      "gamma": 1
-                  }
-              ]
-          },
-          {
-              "featureType": "road.local",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "hue": "#00FFFD"
-                  },
-                  {
-                      "lightness": 30
-                  },
-                  {
-                      "gamma": 1
-                  }
-              ]
-          },
-          {
-              "featureType": "transit.station",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "visibility": "off"
-                  }
-              ]
-          },
-          {
-              "featureType": "water",
-              "elementType": "all",
-              "stylers": [
-                  {
-                      "hue": "#00BFFF"
-                  },
-                  {
-                      "saturation": 6
-                  },
-                  {
-                      "lightness": 8
-                  },
-                  {
-                      "gamma": 1
-                  }
-              ]
-          }
-          ]
-          });
+  var marker;
+  var map;
+  function initMap() {
+    var point = {lat: <%= @match.latitude%>, lng:<%= @match.longitude%>, zoom: 17};
+    var latlng = new google.maps.LatLng(point.lat, point.lng);
+    map = new google.maps.Map($('#map')[0], {
+        zoom: point.zoom,
+        center: latlng,
+        styles: [
+            {
+                "featureType": "landscape",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#FFA800"
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#679714"
+                    },
+                    {
+                        "saturation": 33.4
+                    },
+                    {
+                        "lightness": -25.4
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.attraction",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.business",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.government",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.medical",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.place_of_worship",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.school",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.sports_complex",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text",
+                "stylers": [
+                    {
+                        "lightness": "65"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#53FF00"
+                    },
+                    {
+                        "saturation": -73
+                    },
+                    {
+                        "lightness": 40
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#FBFF00"
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#00FFFD"
+                    },
+                    {
+                        "lightness": 30
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "hue": "#00BFFF"
+                    },
+                    {
+                        "saturation": 6
+                    },
+                    {
+                        "lightness": 8
+                    },
+                    {
+                        "gamma": 1
+                    }
+                ]
+            }
+            ]
+            });
 
-  marker= new google.maps.Marker({
-      position: latlng,
-      map: map
-  });
-};
+    marker= new google.maps.Marker({
+        position: latlng,
+        map: map
+    });
+  };
 
-if(window.google){
-  initMap();
-} else{
-  $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&callback=initMap', {
-    crossDomain: true,
-    dataType: 'script'
-  });
-}
-
+  if(window.google){
+    initMap();
+  } else{
+    $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&callback=initMap', {
+      crossDomain: true,
+      dataType: 'script'
+    });
+  }
 </script>
