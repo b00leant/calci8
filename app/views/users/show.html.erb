@@ -5,10 +5,17 @@
   min-height: 450px;
 }
 </style>
-<div class="row" style="margin-bottom:0">
+<div class="row" style="margin-bottom:0;padding-top:1em">
   <div class="col s12 center-align grey lighten-2" style="padding-bottom:2em">
-    <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"> <!-- notice the "circle" class --><br>
-    <h6>Kermit the Frog</h6>
+    <% if current_user && current_user.avatar.present?%>
+    <%= image_tag current_user.avatar, :class =>"circle avatar responsive-img",:style=>"margin:1em" %>
+    <% else %>
+    <% if current_user && current_user.remote_avatar_url != nil%>
+    <%= image_tag current_user.remote_avatar_url, :class =>"circle avatar responsive-img",:style=>"margin:1em" %>
+    <% end %>
+    <% end %>
+    <!--img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"><br-->
+    <h6><%=@user.name%></h6>
     <p class="grey-text grey-darken-2"><%= @user.email %></p>
     <% if current_user %>
     <!-- Modal Trigger -->
@@ -19,14 +26,14 @@
 <div class="row">
     <div class="col s12">
       <ul class="tabs">
-        <li class="tab col s6 m3"><a class="active" href="#diario">DIARIO</a></li>
-        <li class="tab col s6 m3"><a href="#statistiche">INFO</a></li>
+        <li class="tab col s6 m3"><a href="#diario">DIARIO</a></li>
+        <li class="tab col s6 m3"><a class="active" href="#statistiche">INFO</a></li>
       </ul>
     </div>
     <div id="diario" class="col s12 grey lighten-2">
       <div class="container">
         <ul id="" class="collection matches-collection">
-          <li class="collection-header center-align"><h4>Partite</h4></li>
+          <li class="collection-header center-align"><h6>DIARIO</h6></li>
           <% if @collection.empty? == false%>
           <% @collection.each do |item| %>
           <%if item.class.name == 'Match'%>

@@ -10,6 +10,27 @@
   </div>
 
   <div class="field">
+    <% if current_user && current_user.avatar.url.present? %>
+     <%= image_tag(current_user.avatar.url)%>
+     <%= f.label :remove_avatar do %>
+      <%= f.check_box :remove_avatar %>
+     <% end %>
+     <%= image_tag(current_user.avatar.url)%>
+    <% end %>
+    <div class="file-field input-field">
+      <div class="btn green darken-3">File
+        <i class="material-icons right">cloud_upload</i>
+        <%= f.file_field :avatar%>
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path validate" type="text">
+      </div>
+    </div>
+    <!--%= f.hidden_field :avatar_cache%-->
+  </div>
+
+
+  <div class="field">
     <%= f.label :password %>
     <% if @minimum_password_length %>
     <em>(<%= @minimum_password_length %> characters minimum)</em>
@@ -23,9 +44,9 @@
   </div>
 
   <div class="actions">
-    <%= f.submit "Sign up" %>
+    <%= f.submit "Sign up", :class=>"btn green darken-3"%>
   </div>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<!--%= render "devise/shared/links" %-->
 </div>

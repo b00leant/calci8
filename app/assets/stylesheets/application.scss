@@ -17,6 +17,7 @@
 @import "materialize/components/color-variables";
 $primary-color: color("green", "darken-3") !default;
 @import 'materialize';
+@import "font-awesome";
 @import "themes/dark/green/mdDateTimePicker";
 
 .collection li.collection-item.active{
@@ -125,7 +126,34 @@ a.btn{color:white}
     color: color("green", "darken-3") !important;
 }
 /* label underline focus color */
-  input#pac-input input[type=text]:focus {
-    border-bottom: 1px solid color("green", "darken-3") !important;
-    box-shadow: 0 1px 0 0 #000 !important;
-  }
+input#pac-input input[type=text]:focus {
+  border-bottom: 1px solid color("green", "darken-3") !important;
+  box-shadow: 0 1px 0 0 #000 !important;
+}
+input:not([type]), input[type=text]:not(.browser-default),
+input[type=password]:not(.browser-default),
+input[type=email]:not(.browser-default),
+input[type=url]:not(.browser-default),
+input[type=time]:not(.browser-default),
+input[type=date]:not(.browser-default),
+input[type=datetime]:not(.browser-default),
+input[type=datetime-local]:not(.browser-default),
+input[type=tel]:not(.browser-default),
+input[type=number]:not(.browser-default),
+input[type=search]:not(.browser-default),
+textarea.materialize-textarea {
+  border-bottom: 1px solid #2E7D32 !important;
+  box-shadow: 0 1px 0 0 #2E7D32 !important;
+}
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+.avatar{
+  border: 1px solid #2E7D32;
+}

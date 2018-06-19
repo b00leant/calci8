@@ -37,6 +37,8 @@ gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'md-date-time-picker-rails'
 gem 'omniauth-facebook'
+gem 'carrierwave', '~> 1.0'
+gem "font-awesome-rails"
 
 
 # Use Capistrano for deployment
