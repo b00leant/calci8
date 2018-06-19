@@ -1,24 +1,21 @@
-# README
+# CALCI8
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Questa è un'applicazione realizzata per il corso di laboratorio
+di Applicazione Software e Sicurezza Informatica (Querzoni-Mecella)
 
-Things you may want to cover:
+Questa web-app ti consente di:
 
-* Ruby version
+* Creare il tuo account tramite email e OmniAuth (Facebook)
 
-* System dependencies
+* Organizzare squadre di calcio, calcetto e calcio a otto (o calci8)
 
-* Configuration
+* Organizzare partite amichevoli, senza il bisogno di essere membri di squadre
 
-* Database creation
+* Organizzare match fra due squadre
 
-* Database initialization
+* Invitare utenti a far parte di una squadra, e di conseguenza scegliere di accettare
+o rifiutare la richiesta
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
+* Vedere le statistiche di ogni giocatore tramite Google Charts
 
 * ...
