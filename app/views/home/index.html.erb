@@ -1,5 +1,26 @@
 <div class="main-content row grey lighten-2">
   <div id="test1" class="col s12 offset-m1 m10 offset-l3 l6">
+    <!-- Tap Target Structure -->
+    <div class="tap-target" data-target="calci8_button">
+      <div class="tap-target-content">
+        <h5>Title </h5>
+        <p>A bunch of text</p>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('turbolinks:before-cache', function() {
+        var fea_elems = document.querySelectorAll('.tap-target');
+        var fea_instances = M.TapTarget.init(fea_elems, {});
+        fea_instances[0].open(3);
+        setTimeout(function(){ fea_instances[0].close();; }, 3000);
+      });
+      document.addEventListener('turbolinks:load', function() {
+        var fea_elems = document.querySelectorAll('.tap-target');
+        var fea_instances = M.TapTarget.init(fea_elems, {});
+        fea_instances[0].open(3);
+        setTimeout(function(){ fea_instances[0].close();; }, 3000);
+      });
+    </script>
     <div class="container">
       <ul id="" class="collection matches-collection">
         <li class="collection-header center-align"><h4>News</h4></li>

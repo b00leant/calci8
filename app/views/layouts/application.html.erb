@@ -16,7 +16,7 @@
     <div class="navbar-fixed">
       <nav class="nav-extended">
         <div class="nav-wrapper">
-          <a href="#" class="brand-logo center">Calci8</a>
+          <a href="/" class="brand-logo center">Calci8</a>
           <a href="#" data-target="sidenav-trigger" class="white-text sidenav-trigger show-on-large"><i class="material-icons">menu</i></a>
           <a href="#" data-target="notification-trigger" class="right white-text sidenav-trigger show-on-large"><i class="material-icons">notifications</i></a>
           </ul>
@@ -55,7 +55,7 @@
   <%= yield %>
 </div>
   <div class="fixed-action-btn">
-    <a class="btn-floating btn-large green darken-3">
+    <a id="calci8_button" class="btn-floating btn-large green darken-3">
       <i class="large material-icons">add</i>
     </a>
     <ul>
@@ -102,24 +102,34 @@
   <div class="container">
     <div class="row">
       <div class="col l6 s12">
-        <h5 class="white-text">Footer Content</h5>
-        <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+        <h5 class="white-text">Calci8</h5>
+        <span class="grey-text text-lighten-4">
+          Quest'app è stata realizzata per il progetto universitario del laboratorio di
+          "Progetto Applicazione Software e Sicurezza Informatica".
+          Corso della facoltà di Ingegneria Informatica
+          e automatica sostenuto dai professori Querzoni e Mecella.
+        </span>
       </div>
       <div class="col l4 offset-l2 s12">
         <h5 class="white-text">Links</h5>
         <ul>
-          <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-          <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-          <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-          <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+          <li><a class="btn-flat grey white-text text-lighten-3" href="https://github.com/lquerzoni/lassi-lab">
+            Github del corso<i class="fab fa-github right"></i>
+          </a></li><br>
+          <li><a class="btn-flat grey white-text text-lighten-3" href="https://github.com/useless-id/calci8">
+            Github del progetto<i class="fab fa-github right"></i></a>
+          </li><br>
+          <li><a class="btn-flat grey white-text text-lighten-3" href="https://piazza.com/uniroma1.it/spring2016/aaf1519aaf1520aaf1569/home">
+            Piazza del corso</a>
+          </li>
         </ul>
       </div>
     </div>
   </div>
   <div class="footer-copyright">
     <div class="container">
-    © 2014 Copyright Text
-    <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+    © 2018 Stefano Latini
+    <!--a class="grey-text text-lighten-4 right" href="#!">More Links</a-->
     </div>
   </div>
 </footer>
