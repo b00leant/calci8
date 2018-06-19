@@ -22,7 +22,8 @@ Rails.application.routes.draw do
   end
 
   get 'matches/:id/set_score', :to => 'matches#set_score', as: 'set_match_score'
-  post 'matches/:id/update_score', :to => 'teams#update_score', as: 'update_match_score'
+  post 'matches/:id/update_score', :to => 'matches#update_score', as: 'update_match_score'
+  get 'teams/:id/edit_players_roles', :to => 'teams#edit_players_roles', as: 'edit_players_roles'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get 'teams/:id/select_new_players', :to => 'teams#select_new_players', as: 'select_new_players'

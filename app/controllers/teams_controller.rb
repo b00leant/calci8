@@ -43,6 +43,11 @@ class TeamsController < ApplicationController
     end
   end
 
+  def edit_players_roles
+    @team = Team.find(params[:id])
+    @users = @team.users
+  end
+
   # POST /teams
   # POST /teams.json
   def create

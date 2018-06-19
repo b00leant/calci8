@@ -58,6 +58,7 @@
           <%if current_user && current_user.has_role?(:manager, @team)%>
           <a style="margin-top:1em" href="<%=select_new_players_path(@team)%>" class="">Invita Giocatore</a>
           <a style="margin-top:1em" href="<%=select_new_players_path(@team)%>" class="">Modifica Ruoli</a>
+          <a style="margin-top:1em" href="<%=edit_players_roles_path(@team)%>" class="">Modifica Formazione</a>
           <%end%>
         </div>
       </div>

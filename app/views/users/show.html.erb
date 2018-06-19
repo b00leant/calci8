@@ -1,4 +1,10 @@
 
+<style>
+.chart_class {
+  width: 100%;
+  min-height: 450px;
+}
+</style>
 <div class="row" style="margin-bottom:0">
   <div class="col s12 center-align grey lighten-2" style="padding-bottom:2em">
     <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"> <!-- notice the "circle" class --><br>
@@ -40,7 +46,10 @@
       <div class="container">
         <div class="section player-info-section">
           <h6 class="center-align">STATISTICHE GIOCATORE</h6>
-          <div id="chart_div" style="width:auto"></div>
+          <div class="row"><div class="col s12">
+            <div id="chart_div" class="chart_class"></div>
+            </div>
+          </div>
         </div>
         <div class="section">
           <h6 class="center-align">SQUADRE IN CUI SI TROVA</h6>
@@ -84,6 +93,15 @@
 </div>
 
 <script>
+
+  if(window.google){
+    initMap();
+  } else{
+    $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQ-2Mz_gAsm5QNgNq__wzPVhfGIOIifpI&callback=initMap', {
+      crossDomain: true,
+      dataType: 'script'
+    });
+  }
 
   var numMatchItems = $('.free_match_item').length;
   var markers = [];
@@ -522,15 +540,6 @@
       });
     });
   };
-
-  if(window.google){
-    initMap();
-  } else{
-    $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&callback=initMap', {
-      crossDomain: true,
-      dataType: 'script'
-    });
-  }
 
 </script>
 

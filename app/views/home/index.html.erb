@@ -22,7 +22,14 @@
 </div>
 
 <script>
-
+  if(window.google){
+    initMap();
+  } else{
+    $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQ-2Mz_gAsm5QNgNq__wzPVhfGIOIifpI&callback=initMap', {
+      crossDomain: true,
+      dataType: 'script'
+    });
+  }
   var numMatchItems = $('.match_item').length;
   var markers = [];
   var maps = [];
@@ -461,13 +468,6 @@
     });
   };
 
-  if(window.google){
-    initMap();
-  } else{
-    $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyA6xQyIQvn_5NS8aUn6Y405qOkomAvbwzA&callback=initMap', {
-      crossDomain: true,
-      dataType: 'script'
-    });
-  }
+
 
 </script>

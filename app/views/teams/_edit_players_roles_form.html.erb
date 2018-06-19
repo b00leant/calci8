@@ -1,0 +1,59 @@
+<%= form_with(model: team, local: true) do |form| %>
+  <% if team.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(team.errors.count, "error") %> prohibited this team from being saved:</h2>
+
+      <ul>
+      <% team.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="container">
+    <ul class="collection with-header">
+        <li class="collection-header"><h4>Giocatori</h4></li>
+      <% @users.each do |user|%>
+        <li class="collection-item avatar"><%=user.email%>
+          <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="circle responsive-img">
+          <input id="<%=user.id%>" type="hidden" name="player_role[<%=user.id%>][]"/>
+          <a class="secondary-content waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+        </li>
+      <%end%>
+    </ul>
+    <div class="actions">
+      <%= form.submit  class: "right btn green darken-2"%>
+    </div>
+  </div>
+<% end %>
+
+
+<!-- Modal Structure -->
+<div id="modal1" class="modal" style="overflow:visible">
+  <div class="modal-content">
+    <h6>Quale ruolo vuoi dargli?</h6>
+    <div class="section">
+      <div class="input-field col s12 m6">
+        <select class="icons">
+          <option value="" disabled selected>Choose your option</option>
+          <option value="" data-icon="images/sample-1.jpg">example 1</option>
+          <option value="" data-icon="images/office.jpg">example 2</option>
+          <option value="" data-icon="images/yuna.jpg">example 3</option>
+        </select>
+        <label>Images in select</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
+</div>
+
+
+
+<script>
+  document.addEventListener('turbolinks:load', function() {
+  var elems = document.querySelectorAll('select');
+  var instances = M.FormSelect.init(elems, {});
+  });
+</script>
