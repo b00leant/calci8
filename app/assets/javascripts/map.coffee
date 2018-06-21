@@ -1,595 +1,454 @@
+$(document).on 'turbolinks:load', ->
+  numMatchItems = $('.match_item').length;
+  markers = [];
+  maps = [];
+  initMap= ->
+    $('.match_item').each(i, obj) =>
 
-<style>
-.chart_class {
-  width: 100%;
-  min-height: 450px;
-}
-</style>
-<div class="row" style="margin-bottom:0;padding-top:1em">
-  <div class="col s12 center-align grey lighten-2" style="padding-bottom:2em">
-    <% if current_user && current_user.avatar.present?%>
-    <%= image_tag current_user.avatar, :class =>"circle avatar responsive-img",:style=>"margin:1em; width:64px;height:64px" %>
-    <% else %>
-    <% if current_user && current_user.remote_avatar_url != nil%>
-    <%= image_tag current_user.remote_avatar_url, :class =>"circle avatar responsive-img",:style=>"margin:1em; width:64px;height:64px" %>
-    <% end %>
-    <% end %>
-    <!--img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="margin:1em" class="circle responsive-img"><br-->
-    <h6><%=@user.name%></h6>
-    <p class="grey-text grey-darken-2"><%= @user.email %></p>
-    <% if current_user %>
-    <!-- Modal Trigger -->
-    <a href="#modal1"class="waves-effect waves-light btn modal-trigger btn white black-text"><i class="right material-icons">settings</i> Impostazioni</a>
-    <% end %>
-  </div>
-</div>
-<div class="row">
-    <div class="col s12">
-      <ul class="tabs">
-        <li class="tab col s6 m3"><a href="#diario">DIARIO</a></li>
-        <li class="tab col s6 m3"><a class="active" href="#statistiche">INFO</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="row">
-    <div id="diario" class="col s12 grey lighten-2">
-      <div class="container">
-        <ul id="" class="collection matches-collection">
-          <li class="collection-header center-align"><h6>DIARIO</h6></li>
-          <% if @collection.empty? == false%>
-          <% @collection.each do |item| %>
-          <%if item.class.name == 'Match'%>
-          <%= render partial: "items/match", locals: {match: item}%>
-          <%end%>
-          <%if item.class.name == 'FreeMatch'%>
-          <%= render partial: "items/free_match", locals: {free_match: item}%>
-          <%end%>
-          <%if item.class.name == 'Team'%>
-          <%= render partial: "items/team", locals: {team: item}%>
-          <%end%>
-          <% end %>
-          <% end %>
-      </div>
-    </div>
-    <div id="statistiche" class="col s12 grey lighten-2">
-      <div class="container">
-        <div class="section player-info-section">
-          <h6 class="center-align">STATISTICHE GIOCATORE</h6>
-          <div class="row"><div class="col s12">
-            <div id="chart_div" class="chart_class"></div>
-            </div>
-          </div>
-        </div>
-        <div class="section">
-          <h6 class="center-align">SQUADRE IN CUI SI TROVA</h6>
-          <div class="places-grid">
-            <div class="row">
-              <% @teams.each do |team| %>
-              <div class="col s6 l3 m3 places-holder">
-                <div class="card hoverable">
-                  <div class="card-image materialboxed" width="50">
-                    <span class="picture responsive-img"></span>
-                  </div>
-                  <div class="card-content mar-bottom">
-                        <i class="material-icons">delete</i>
-                  </div>
-                  <div class="card-action">
-                    <%= link_to "Team", team %>
-                  </div>
-                </div>
-              </div>
-              <% end %>
-            </div>
-          </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal Structure -->
-<div id="modal1" class="modal">
-  <div class="modal-content">
-    <h5>Impostazioni</h5>
-    <p>Cosa vuoi modificare?</p>
-    <div class="collection">
-      <%= link_to('Impostazioni Giocatore', user_settings_path(current_user, anchor: "P"), class:"collection-item") %>
-      <%= link_to('Impostazioni Utente', edit_user_registration_path(anchor: "U"), class:"collection-item") %>
-      <%= link_to('Impostazioni Notifiche', user_settings_path(current_user, anchor: "N"), class:"collection-item") %>
-    </div>
-  </div>
-  <!--div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-  </div-->
-</div>
-
-<script>
-
-  if(window.google){
-    initMap();
-  } else{
-    $.ajax('https://maps.googleapis.com/maps/api/js?key=AIzaSyDQ-2Mz_gAsm5QNgNq__wzPVhfGIOIifpI&callback=initMap', {
-      crossDomain: true,
-      dataType: 'script'
-    });
-  }
-
-  var numMatchItems = $('.free_match_item').length;
-  var markers = [];
-  var maps = [];
-  function initMap() {
-    $('.free_match_item').each(function(i, obj) {
-      var point = {lat: $(obj).data("la"), lng: $(obj).data("lo"), zoom: 17};
-      var latlng = new google.maps.LatLng(point.lat, point.lng);
-      maps[i] = new google.maps.Map($(this).find('#map')[0], {
-          zoom: point.zoom,
-          center: latlng,
-          styles: [
-              {
-                  "featureType": "landscape",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#FFA800"
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "landscape.man_made",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "landscape.man_made",
-                  "elementType": "geometry",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#679714"
-                      },
-                      {
-                          "saturation": 33.4
-                      },
-                      {
-                          "lightness": -25.4
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.attraction",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.business",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.government",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.medical",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.park",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.place_of_worship",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.school",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.sports_complex",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road",
-                  "elementType": "labels.text",
-                  "stylers": [
-                      {
-                          "lightness": "65"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road.highway",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#53FF00"
-                      },
-                      {
-                          "saturation": -73
-                      },
-                      {
-                          "lightness": 40
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road.arterial",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#FBFF00"
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road.local",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#00FFFD"
-                      },
-                      {
-                          "lightness": 30
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "transit.station",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "water",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#00BFFF"
-                      },
-                      {
-                          "saturation": 6
-                      },
-                      {
-                          "lightness": 8
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              }
-              ]
-              });
-
-      markers[i] = new google.maps.Marker({
-          position: latlng,
-          map: maps[i]
-      });
-    });
-    $('.match_item').each(function(i, obj) {
-      var point = {lat: $(obj).data("la"), lng: $(obj).data("lo"), zoom: 17};
-      var latlng = new google.maps.LatLng(point.lat, point.lng);
-      maps[i] = new google.maps.Map($(this).find('#map')[0], {
-          zoom: point.zoom,
-          center: latlng,
-          styles: [
-              {
-                  "featureType": "landscape",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#FFA800"
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "landscape.man_made",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "landscape.man_made",
-                  "elementType": "geometry",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#679714"
-                      },
-                      {
-                          "saturation": 33.4
-                      },
-                      {
-                          "lightness": -25.4
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.attraction",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.business",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.government",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.medical",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.park",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.place_of_worship",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.school",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "poi.sports_complex",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "on"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road",
-                  "elementType": "labels.text",
-                  "stylers": [
-                      {
-                          "lightness": "65"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road.highway",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#53FF00"
-                      },
-                      {
-                          "saturation": -73
-                      },
-                      {
-                          "lightness": 40
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road.arterial",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#FBFF00"
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "road.local",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#00FFFD"
-                      },
-                      {
-                          "lightness": 30
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              },
-              {
-                  "featureType": "transit.station",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "visibility": "off"
-                      }
-                  ]
-              },
-              {
-                  "featureType": "water",
-                  "elementType": "all",
-                  "stylers": [
-                      {
-                          "hue": "#00BFFF"
-                      },
-                      {
-                          "saturation": 6
-                      },
-                      {
-                          "lightness": 8
-                      },
-                      {
-                          "gamma": 1
-                      }
-                  ]
-              }
-              ]
-              });
-
-      markers[i] = new google.maps.Marker({
-          position: latlng,
-          map: maps[i]
-      });
-    });
-  };
-
-</script>
-
-<style>
-  .tabs .tab a:focus, .tabs .tab a:focus.active{
-    background-color: white;
-  }
-</style>
-
-<!--Load the AJAX API-->
-<script type="text/javascript">
-//responsive charts
-  $(window).resize(function(){
-  drawChart();
-  });
-
-  // Load the Visualization API and the corechart package.
-  google.charts.load('current', {'packages':['corechart']});
-
-  // Set a callback to run when the Google Visualization API is loaded.
-  google.charts.setOnLoadCallback(drawChart);
-
-  // Callback that creates and populates a data table,
-  // instantiates the pie chart, passes in the data and
-  // draws it.
-  function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses'],
-          ['2013',  1000,      400],
-          ['2014',  1170,      460],
-          ['2015',  660,       1120],
-          ['2016',  1030,      540]
-        ]);
-
-        var options = {
-          title: 'Company Performance',
-          hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
-          vAxis: {minValue: 0}
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+      point = {
+        lat: $(obj).data("la")
+        lng: $(obj).data("lo")
+        zoom: 17
       }
-</script>
+
+      latlng = new google.maps.LatLng
+      point.lat
+      point.lng
+
+      mapoptions = {
+        zoom: point.zoom
+        center: latlng
+        styles: [
+              {
+                  "featureType": "landscape",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#FFA800"
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "landscape.man_made",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "landscape.man_made",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#679714"
+                      },
+                      {
+                          "saturation": 33.4
+                      },
+                      {
+                          "lightness": -25.4
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.attraction",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.business",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.government",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.medical",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.park",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.place_of_worship",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.school",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.sports_complex",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road",
+                  "elementType": "labels.text",
+                  "stylers": [
+                      {
+                          "lightness": "65"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.highway",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#53FF00"
+                      },
+                      {
+                          "saturation": -73
+                      },
+                      {
+                          "lightness": 40
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.arterial",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#FBFF00"
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.local",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#00FFFD"
+                      },
+                      {
+                          "lightness": 30
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "transit.station",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "water",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#00BFFF"
+                      },
+                      {
+                          "saturation": 6
+                      },
+                      {
+                          "lightness": 8
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              }
+              ]
+      }
+
+      maps[i] = new google.maps.Map $(this).find('#map')[0],mapoptions
+
+      markers[i] = new google.maps.Marker
+        position: latlng
+        map: maps[i]
+
+    $('.free_match_item').each(i, obj) =>
+
+      point = {
+        lat: $(obj).data("la")
+        lng: $(obj).data("lo")
+        zoom: 17
+      }
+
+      latlng = new google.maps.LatLng point.lat, point.lng
+
+      mapoptions = {
+          zoom: point.zoom
+          center: latlng
+          styles: [
+              {
+                  "featureType": "landscape",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#FFA800"
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "landscape.man_made",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "landscape.man_made",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#679714"
+                      },
+                      {
+                          "saturation": 33.4
+                      },
+                      {
+                          "lightness": -25.4
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.attraction",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.business",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.government",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.medical",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.park",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.place_of_worship",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.school",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi.sports_complex",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road",
+                  "elementType": "labels.text",
+                  "stylers": [
+                      {
+                          "lightness": "65"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.highway",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#53FF00"
+                      },
+                      {
+                          "saturation": -73
+                      },
+                      {
+                          "lightness": 40
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.arterial",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#FBFF00"
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.local",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#00FFFD"
+                      },
+                      {
+                          "lightness": 30
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              },
+              {
+                  "featureType": "transit.station",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "water",
+                  "elementType": "all",
+                  "stylers": [
+                      {
+                          "hue": "#00BFFF"
+                      },
+                      {
+                          "saturation": 6
+                      },
+                      {
+                          "lightness": 8
+                      },
+                      {
+                          "gamma": 1
+                      }
+                  ]
+              }
+              ]
+      }
+
+      maps[i] = new google.maps.Map $(this).find('#map')[0], mapoptions
+
+    markers[i] = new google.maps.Marker
+      position: latlng
+      map: maps[i]

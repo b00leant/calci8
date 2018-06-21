@@ -1,0 +1,769 @@
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, or any plugin's
+// vendor/assets/javascripts directory can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// compiled file. JavaScript code in this file should be added after the last require_* statement.
+//
+// Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
+// about supported directives.
+//
+//= require jquery
+//= require rails-ujs
+//= require jquery.turbolinks
+//= require moment.min
+//= require moment.locales
+//= require draggabilly.pkgd.min
+//= require mdDateTimePicker
+//= require materialize
+//= require turbolinks
+//= require_tree .
+
+
+var sidenav_elem, sidenav_instance,notification_elem,notification_instance;
+document.addEventListener('turbolinks:load', function() {
+  var spy_elems = document.querySelectorAll('.scrollspy');
+  var spy_instances = M.ScrollSpy.init(spy_elems, {});
+  var tip_elems = document.querySelectorAll('.tooltipped');
+  var tip_instances = M.Tooltip.init(tip_elems, {
+    position: "top",
+    delay:1
+  });
+  M.Modal._count = 0;
+  M.Sidenav._count = 0;
+  modal_elems = document.querySelectorAll('.modal');
+  modal_instances = M.Modal.init(modal_elems, {});
+  var fab_elems = document.querySelectorAll('.fixed-action-btn');
+  var fab_instances = M.FloatingActionButton.init(fab_elems, {direction:'left'});
+  sidenav_elem = document.querySelector('.sidenav-sidenav');
+  sidenav_instance =  M.Sidenav.init(sidenav_elem, {});
+  notification_elem = document.querySelector('.notification-sidenav');
+  notification_instance = M.Sidenav.init(notification_elem, {edge: 'right'});
+  console.log("caricato turbolinks");
+  $('.tabs').tabs({
+      //swipeable : true,
+      //responsiveThreshold : 1920
+    });
+  $('.collapsible').collapsible();
+});
+
+document.addEventListener('turbolinks:before-cache', function() {
+  sidenav_elem = document.querySelector('.sidenav-sidenav');
+  notification_elem = document.querySelector('.notification-sidenav');
+  notification_instance = M.Sidenav.getInstance(notification_elem);
+  if (notification_instance){
+    notification_instance.destroy();
+
+  }else{
+  }
+  sidenav_instance = M.Sidenav.getInstance(sidenav_elem);
+  if (sidenav_instance){
+    sidenav_instance.destroy();
+  }else{
+  }
+  modal_elems = document.querySelectorAll('.modal');
+  modal_instances = M.Modal.getInstance(modal_elems, {});
+  if(modal_instances){
+    modal_instances.destroy();
+  }
+});
+
+
+// This is the js source for the FreeMatch form
+function formFreeMatch() {
+  console.log("Siamo nel form per il FreeMatch");
+  dateToggleButton = document.getElementById("date_input");
+  dialog_date = new mdDateTimePicker["default"]({
+    type: 'date',
+    future: moment().add(1, 'years'),
+    trigger: dateToggleButton
+  });
+  timeToggleButton = document.getElementById("time_input");
+  dialog_time = new mdDateTimePicker["default"]({
+    type: 'time',
+    future: moment().add(1, 'years'),
+    trigger: timeToggleButton
+  });
+  $('#mddtp-time__AM').html('AM');
+  $('#mddtp-time__PM').html('PM');
+  dateToggleButton.addEventListener("click", function() {
+     return dialog_date.toggle();
+   });
+  timeToggleButton.addEventListener("click", function() {
+    //dialog_date.time = moment();
+    return dialog_time.toggle();
+  });
+
+  dateToggleButton.addEventListener("onOk", function(e) {
+    dialog_time.time = dialog_date.time;
+    $('button[name="action"]').disabled = true;
+    $('button[name="action"]').prop('disabled', true);
+    $("#date_input").html(dialog_date.time.format('L')+'<i class="material-icons right">date_range</i>');
+    $("#time_input").html('ORARIO<i class="material-icons right">access_time</i>').val('')
+    console.log(dialog_date.time);
+  });
+  timeToggleButton.addEventListener("onOk", function(e) {
+    $("#time_input").html(dialog_time.time.format('HH:MM')+ '<i class="material-icons right">access_time</i>');
+    $("#date_input").html(dialog_time.time.format('L')+'<i class="material-icons right">date_range</i>');
+    console.log(dialog_time.time);
+    console.log(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+
+    // Salvo la data nel rispettivo input form già formattata
+    $('input[name="free_match[date]"]').val(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+    if($('input[name="free_match[latitude]"]').val())
+      if($('input[name="player_to_add[]"]').val()){
+        $('button[name="action"]').disabled = false;
+        $('button[name="action"]').prop('disabled', false);
+      }
+  });
+
+  initAutocompleteFormFreeMatch();
+
+  function initAutocompleteFormFreeMatch() {
+
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -33.8688, lng: 151.2195},
+    zoom: 13,
+    mapTypeId: 'roadmap',
+    mapTypeControl: false,
+    styles: [
+        {
+            "featureType": "landscape",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "hue": "#FFA800"
+                },
+                {
+                    "gamma": 1
+                }
+            ]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "hue": "#679714"
+                },
+                {
+                    "saturation": 33.4
+                },
+                {
+                    "lightness": -25.4
+                },
+                {
+                    "gamma": 1
+                }
+            ]
+        },
+        {
+            "featureType": "poi.attraction",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.business",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.government",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.medical",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.place_of_worship",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.school",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.sports_complex",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.text",
+            "stylers": [
+                {
+                    "lightness": "65"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "hue": "#53FF00"
+                },
+                {
+                    "saturation": -73
+                },
+                {
+                    "lightness": 40
+                },
+                {
+                    "gamma": 1
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "hue": "#FBFF00"
+                },
+                {
+                    "gamma": 1
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "hue": "#00FFFD"
+                },
+                {
+                    "lightness": 30
+                },
+                {
+                    "gamma": 1
+                }
+            ]
+        },
+        {
+            "featureType": "transit.station",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "hue": "#00BFFF"
+                },
+                {
+                    "saturation": 6
+                },
+                {
+                    "lightness": 8
+                },
+                {
+                    "gamma": 1
+                }
+            ]
+        }
+        ]
+  });
+
+  // Create the search box and link it to the UI element.
+  var input = document.getElementById('pac-input');
+  var searchBox = new google.maps.places.SearchBox(input);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  var markers = [];
+  // Listen for the event fired when the user selects a prediction and retrieve
+  // more details for that place.
+  searchBox.addListener('places_changed', function() {
+    var places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    // Clear out the old markers.
+    markers.forEach(function(marker) {
+      marker.setMap(null);
+    });
+    markers = [];
+
+    // For each place, get the icon, name and location.
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      if (!place.geometry) {
+        console.log("Returned place contains no geometry");
+        return;
+      }
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
+      console.log("lat: "+place.geometry.location.lat()+" & lon: "+place.geometry.location.lng());
+      $('input[name="free_match[latitude]"]').val(place.geometry.location.lat());
+      $('input[name="free_match[longitude]"]').val(place.geometry.location.lng());
+      if($('input[name="free_match[date]"]').val())
+        if($('input[name="player_to_add[]"]').length >0 ){
+        $('button[name="action"]').prop('disabled', false);
+      }else{
+        console.log($('input[name="player_to_add[]"]'))
+        console.log("dopo la location qualcosa non è stato preso");
+      }
+      // Create a marker for each place.
+      markers.push(new google.maps.Marker({
+        map: map,
+        icon: icon,
+        title: place.name,
+        position: place.geometry.location
+      }));
+
+
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+  });
+  }
+}
+
+// This is the js source for the Match form
+function formMatch(homeTeams,hostTeams) {
+  $('#host-input').change(function(){
+    if($('input[name="match[latitude]"]').val())
+      if($('input[name="match[date]"]').val())
+        if($(this).val())
+          if($('#home-input').val()){
+            $('button[name="action"]').disabled = false;
+            $('button[name="action"]').prop('disabled', false);
+          }
+  });
+  $('#home-input').change(function(){
+    if($('input[name="match[latitude]"]').val())
+      if($('input[name="match[date]"]').val())
+        if($(this).val())
+          if($('#host-input').val()){
+            $('button[name="action"]').disabled = false;
+            $('button[name="action"]').prop('disabled', false);
+          }
+  });
+  $('input.autocompletehome').autocomplete({
+    data: homeTeams
+  });
+  $('input.autocompletehost').autocomplete({
+    data: hostTeams
+  });
+
+  dateToggleButton = document.getElementById("date_input");
+  dialog_date = new mdDateTimePicker["default"]({
+    type: 'date',
+    future: moment().add(1, 'years'),
+    trigger: dateToggleButton
+  });
+  timeToggleButton = document.getElementById("time_input");
+  dialog_time = new mdDateTimePicker["default"]({
+    type: 'time',
+    future: moment().add(1, 'years'),
+    trigger: timeToggleButton
+  });
+  $('#mddtp-time__AM').html('AM');
+  $('#mddtp-time__PM').html('PM');
+  dateToggleButton.addEventListener("click", function() {
+     return dialog_date.toggle();
+   });
+  timeToggleButton.addEventListener("click", function() {
+    //dialog_date.time = moment();
+    return dialog_time.toggle();
+  });
+
+  dateToggleButton.addEventListener("onOk", function(e) {
+    dialog_time.time = dialog_date.time;
+    $("#date_input").html(dialog_date.time.format('L'));
+    console.log(dialog_date.time);
+  });
+  timeToggleButton.addEventListener("onOk", function(e) {
+    $("#time_input").html(dialog_time.time.format('HH:MM'));
+    console.log(dialog_time.time);
+    console.log(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+
+    // Salvo la data nel rispettivo input form già formattata
+    $('input[name="match[date]"]').val(dialog_time.time.format('YYYY-MM-DD HH:MM:SS'));
+    if($('input[name="match[latitude]"]').val())
+      if($('#host-input').val())
+        if($('#home-input')){
+          $('button[name="action"]').disabled = false;
+          $('button[name="action"]').prop('disabled', false);
+    }
+   });
+
+  initAutocompleteFormMatch();
+
+  function initAutocompleteFormMatch() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: -33.8688, lng: 151.2195},
+      zoom: 13,
+      mapTypeId: 'roadmap',
+      mapTypeControl: false,
+      styles: [
+          {
+              "featureType": "landscape",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "hue": "#FFA800"
+                  },
+                  {
+                      "gamma": 1
+                  }
+              ]
+          },
+          {
+              "featureType": "landscape.man_made",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "on"
+                  }
+              ]
+          },
+          {
+              "featureType": "landscape.man_made",
+              "elementType": "geometry",
+              "stylers": [
+                  {
+                      "visibility": "on"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "hue": "#679714"
+                  },
+                  {
+                      "saturation": 33.4
+                  },
+                  {
+                      "lightness": -25.4
+                  },
+                  {
+                      "gamma": 1
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.attraction",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.business",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.government",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.medical",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.park",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "on"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.place_of_worship",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.school",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi.sports_complex",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "on"
+                  }
+              ]
+          },
+          {
+              "featureType": "road",
+              "elementType": "labels.text",
+              "stylers": [
+                  {
+                      "lightness": "65"
+                  }
+              ]
+          },
+          {
+              "featureType": "road.highway",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "hue": "#53FF00"
+                  },
+                  {
+                      "saturation": -73
+                  },
+                  {
+                      "lightness": 40
+                  },
+                  {
+                      "gamma": 1
+                  }
+              ]
+          },
+          {
+              "featureType": "road.arterial",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "hue": "#FBFF00"
+                  },
+                  {
+                      "gamma": 1
+                  }
+              ]
+          },
+          {
+              "featureType": "road.local",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "hue": "#00FFFD"
+                  },
+                  {
+                      "lightness": 30
+                  },
+                  {
+                      "gamma": 1
+                  }
+              ]
+          },
+          {
+              "featureType": "transit.station",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "water",
+              "elementType": "all",
+              "stylers": [
+                  {
+                      "hue": "#00BFFF"
+                  },
+                  {
+                      "saturation": 6
+                  },
+                  {
+                      "lightness": 8
+                  },
+                  {
+                      "gamma": 1
+                  }
+              ]
+          }
+          ]
+    });
+
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    var markers = [];
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+        console.log("lat: "+place.geometry.location.lat()+" & lon: "+place.geometry.location.lng());
+        $('input[name="match[latitude]"]').val(place.geometry.location.lat());
+        $('input[name="match[longitude]"]').val(place.geometry.location.lng());
+        if($('input[name="match[date]"]').val())
+          if($('#host-input').val())
+            if($('#home-input')){
+            $('button[name="action"]').prop('disabled', false);
+        }
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        /*geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          // and this is function which processes response
+          if (status == google.maps.GeocoderStatus.OK) {
+            console.log("lat is"+ place.geometry.location.lat());
+            console.log("lon is"+ place.geometry.location.lng());
+
+            alert( loc ); // the place where loc contains geocoded coordinates
+
+          } else {
+            alert("Geocode was not successful for the following reason: " + status);
+          }
+        });*/
+
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+  }
+}

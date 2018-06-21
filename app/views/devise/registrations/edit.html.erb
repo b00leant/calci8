@@ -1,43 +1,71 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<div class="container">
+  <div class="section">
+  <h2><%= t(:edit)%> <%= t(:user) %></h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= devise_error_messages! %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <div class="red-text"><%= devise_error_messages! %></div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+    <div class="field">
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    </div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <div class="field">
+      <% if current_user && current_user.avatar.url.present? %>
+       <%= image_tag current_user.avatar.url , :class =>"circle avatar responsive-img",:style=>"margin:1em; width:64px;height:64px"%>
+       <%= f.label :remove_avatar do %>
+        <%= f.check_box :remove_avatar %>
+       <% end %>
+      <% end %>
+      <div class="file-field input-field">
+        <div class="btn green darken-3">File
+          <i class="material-icons right">cloud_upload</i>
+          <%= f.file_field :avatar%>
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+      </div>
+      <!--%= f.hidden_field :avatar_cache%-->
+    </div>
+
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div><%= t(:currentlywaitingconfirmationfor)%> <%= resource.unconfirmed_email %></div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :password %> <i>(<%= t(:leaveitblankifyoudontwanttochangeit)%>)</i><br />
+      <%= f.password_field :password, autocomplete: "off" %>
+      <% if @minimum_password_length %>
+        <br />
+        <em><%= @minimum_password_length %> <%= t(:charmin)%></em>
+      <% end %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :current_password %> <i>(<%= t(:weneedyoutowritetheoldpassword)%>)</i><br />
+      <%= f.password_field :current_password, autocomplete: "off" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit t(:update), :class => "btn"%>
+    </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
+  <h3><%= t(:cancel_account)%></h3>
+
+  <p><%= t(:tired)%><%= button_to registration_path(resource_name), style:"background-color:red !important",data: { confirm: t(:areusure) }, method: :delete, :class =>"btn red" do%>
+    <%= t(:cancel)%><i class="material-icons left">cancel</i>
+    <%end%>
+  </p>
+
+  <p><%= link_to :back, :class => "btn" do%>
+  <%= t(:back) %> <i class="material-icons left">chevron_left</i>
+  <%end%></p>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
-
-<%= link_to "Back", :back %>
+</div>

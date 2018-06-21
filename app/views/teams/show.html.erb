@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row" style="padding-top:1em">
-    <div class="col s12 m3 xl4">
+    <div class="col s12 m4 xl4">
       <div class="card">
         <div class="card-image">
           <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" class="team-logo circle">
@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div class="col s12 m9 xl8">
+    <div class="col s12 m8 xl8">
       <div class="card">
         <div class="card-content">
           <span class="card-title">Formazione</span>
@@ -47,7 +47,13 @@
           <div class="collection">
             <% @team.users.each do |user| %>
             <div class="collection-item avatar">
-              <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" style="height:40px;width:40px;" class="circle responsive-img">
+              <% if current_user && current_user.avatar.present?%>
+              <%= image_tag current_user.avatar, :class =>"circle avatar responsive-img",:style=>"margin:1em" %>
+              <% else %>
+              <% if current_user && current_user.remote_avatar_url != nil%>
+              <%= image_tag current_user.remote_avatar_url, :class =>"circle avatar responsive-img",:style=>"margin:1em" %>
+              <% end %>
+              <% end %>
               <p><%= user.email %></p>
             </div>
             <%end%>
@@ -73,7 +79,7 @@
     <ul class="collection">
       <% @team.users.each do |user| %>
       <li class="collection-item avatar">
-      <img src="https://pbs.twimg.com/profile_images/1011320337/Muppets-4624932-Funny-Cartoons.jpg" alt="" class="circle">
+      <img src="<%= user.avatar%>" alt="" class="circle">
       <span class="title">Title</span>
       <p><%= user.email %><br>
          Second Line

@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/solid.css" integrity="sha384-VxweGom9fDoUf7YfLTHgO0r70LVNHP5+Oi8dcR4hbEjS8UnpRtrwTx7LpHq/MWLI" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQ-2Mz_gAsm5QNgNq__wzPVhfGIOIifpI&libraries=places" data-turbolinks-eval="false"></script>
+    <script async src="https://www.gstatic.com/charts/loader.js"></script>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,13 +26,8 @@
           <% if user_signed_in? %>
           <a href="#" data-target="notification-trigger" class="right white-text sidenav-trigger show-on-large"><i class="material-icons">notifications</i></a>
           <%end%>
-          </ul>
         </div>
         <div class="nav-content">
-        <!--ul class="tabs tabs-transparent tabs-fixed-width">
-          <li class="tab"><a class="active" href="#test1"><i class="fas fa-futbol"></i></></a></li>
-          <li class="tab"><a href="#test2"><i class="material-icons">whatshot</i></a></li>
-        </ul-->
       </div>
       </nav>
     </div>
@@ -38,11 +35,10 @@
     <!-- Se l'utente è loggato.. -->
     <!-- SideNav Notifiche [DESTRA]-->
     <% if user_signed_in? %>
-    <div id="notification-trigger" class="sidenav notification-sidenav fixed collection" >
-      <h6>Notifiche</h6>
-      <ul class="fixed collection" data-behaviour="notifications"></ul>
-    </div>
+    <ul id="notification-trigger" data-behaviour="notifications"class="sidenav notification-sidenav fixed collection-with-header" >
+    </ul>
     <%end%>
+
     <!-- SideNav Menu [SINISTRA]-->
     <ul class="sidenav sidenav-sidenav" id="sidenav-trigger">
       <% if current_page?(:controller => '/home', :action => 'index') == false %>
@@ -60,9 +56,13 @@
         </li>
       <% end %>
     </ul>
+
+    <!-- Contenuto View -->
     <div class="row">
       <%= yield %>
     </div>
+    <!-- Fine View -->
+
     <!-- Se l'utente è loggato posso mostrare il Floating Action Button -->
     <!-- Inizio Floating Action Button -->
     <% if user_signed_in? %>
@@ -90,6 +90,35 @@
     <% end %>
     </script>
     <!-- Fine Script Toasts -->
+
+
+    <% if current_user && current_user.sign_in_count == 1 && current_page?(root_path) %>
+    <!-- Script da integrare solo in caso di primo Login -->
+    <script>
+      $(document).on('turbolinks:before-cache', function() {
+        var fea_elems, fea_instances;
+        fea_elems = document.querySelectorAll('.tap-target');
+        fea_instances = M.Sidenav.getInstance(notification_elem);
+        if (fea_instances) {
+          return fea_instances.destroy();
+        }
+      });
+
+      $(document).on('turbolinks:load', function() {
+        var callback, fea_elems, fea_instances;
+        fea_elems = document.querySelectorAll('.tap-target');
+        fea_instances = M.TapTarget.init(fea_elems, {});
+        if (fea_instances !== void 0) {
+          console.log(fea_instances);
+          callback = function() {
+            return fea_instances[0].open();
+          };
+          return setTimeout(callback, 2000);
+        }
+      });
+    </script>
+    <% else %>
+    <% end %>
   </main>
 
   <!-- Inizio del footer -->

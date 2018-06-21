@@ -1,5 +1,12 @@
 <div class="container">
-  <h2>Nuova Squadra</h2>
+  <% if controller.controller_name == "teams" && controller.action_name == "new" %>
+  <!-- Se siamo sotto il controllore teams_controller e stiamo creando un team
+  allora mostro il breadcrumb all'utente -->
+
+
+  <% end %>
+  <div class="section">
   <%= render 'form', team: @team %>
-  <%= link_to 'Back', teams_path, class:"btn left"%>
+  <%= link_to 'Back', teams_path, class:"btn green darken-2 left"%>
+  </div>
 </div>
